@@ -7,6 +7,9 @@ import methodOverride from "method-override";
 import router from "../route";
 import { API_VERSION } from "./config";
 import { InternalServerError, NotFoundError } from "~/responses/error";
+import { ValidationError } from "express-validation";
+import { pickData } from "~/utils/pick";
+import format from "~/utils/formatValidationError";
 
 const app = express();
 
@@ -28,7 +31,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next(error);
 });
 
-app.use((error: InternalServerError, req: Request, res: Response, next: NextFunction) => {
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  if (error instanceof ValidationError) {
+    return res.status(error.statusCode).json(format(error));
+  }
+
   return res.status(error.status || 500).json({
     error: {
       status: error.status || 500,
