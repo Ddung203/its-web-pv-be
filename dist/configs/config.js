@@ -23,10 +23,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MONGO_URI = exports.API_VERSION = exports.ENVIRONMENT = exports.PORT = void 0;
+exports.JWT_SECRET = exports.MONGO_URI = exports.API_VERSION = exports.ENVIRONMENT = exports.PORT = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.PORT = process.env.PORT || 8181;
 exports.ENVIRONMENT = process.env.ENVIRONMENT || "development";
 exports.API_VERSION = process.env.API_VERSION || "/api/v1";
 exports.MONGO_URI = process.env.MONGO_URI || "";
+exports.JWT_SECRET = process.env.JWT_SECRET || "ES2USMdGFxZ3MuLNQrb9";

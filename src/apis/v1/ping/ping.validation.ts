@@ -1,6 +1,6 @@
 import { Joi } from "express-validation";
 
-const authValidator = {
+const pingValidator = {
   login: {
     body: Joi.object({
       username: Joi.string().alphanum().min(3).max(30).required(),
@@ -9,4 +9,4 @@ const authValidator = {
   },
 };
 
-export default authValidator;
+export default pingValidator;

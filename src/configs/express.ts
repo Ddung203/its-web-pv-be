@@ -4,12 +4,12 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 import methodOverride from "method-override";
+import { rateLimit } from "express-rate-limit";
 import router from "../route";
 import { API_VERSION } from "./config";
-import { InternalServerError, NotFoundError } from "~/responses/error";
-import { ValidationError } from "express-validation";
-import { pickData } from "~/utils/pick";
-import format from "~/utils/formatValidationError";
+import notFoundHandle from "~/middlewares/notFoundHandle";
+import errorHandle from "~/middlewares/errorHandle";
+import { rateLimitOptions } from "./limit";
 
 const app = express();
 
@@ -19,29 +19,16 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(morgan(":method :url :status :response-time ms"));
+// app.use(morgan(":method :url :status :response-time ms"));
+app.use(morgan("dev"));
 app.use(helmet());
 app.use(methodOverride());
 app.use(compression());
+app.use(rateLimit(rateLimitOptions));
 app.use(API_VERSION, router);
 
 // Error handle
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const error: NotFoundError = new NotFoundError();
-  next(error);
-});
-
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-  if (error instanceof ValidationError) {
-    return res.status(error.statusCode).json(format(error));
-  }
-
-  return res.status(error.status || 500).json({
-    error: {
-      status: error.status || 500,
-      message: error.message || "Internal Server Error",
-    },
-  });
-});
+app.use(notFoundHandle);
+app.use(errorHandle);
 
 export default app;
