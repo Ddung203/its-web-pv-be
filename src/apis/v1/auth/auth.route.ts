@@ -8,7 +8,7 @@ import authentication from "~/middlewares/authentication";
 const router = express.Router();
 
 // Auth endpoint
-router.get("/login", validate(authValidator.login), asyncHandle(AuthController.loginHandle));
+router.post("/login", validate(authValidator.login), asyncHandle(AuthController.loginHandle));
 
 router.post(
   "/signup",
