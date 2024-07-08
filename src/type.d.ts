@@ -4,8 +4,8 @@ interface IUser {
   studentClass: string;
   studentPhone: string;
   password: string;
-  image: string;
-  role: string;
-  isOnline: boolean;
-  status: number;
+  image?: string;
+  role: "user" | "admin";
+  isOnline?: boolean;
+  status?: number;
 }

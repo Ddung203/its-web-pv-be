@@ -22,7 +22,9 @@ class AuthController {
 
     if (user.isOnline) throw new AuthFailureError("User is already logged in!");
 
-    const { refreshToken, accessToken } = await jwtHandler.createTokenPair({ user });
+    const { refreshToken, accessToken } = await jwtHandler.createTokenPair({
+      user: omitData({ fields: ["password"], object: user }),
+    });
 
     return res.status(HttpStatusCode.OK).json({
       success: true,
