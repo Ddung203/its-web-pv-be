@@ -11,4 +11,10 @@ const pickData = ({ fields = [], object = {} }: PickDataOptions): Record<string,
   return _.pick(object, fields);
 };
 
-export { pickData };
+const omitData = ({ fields = [], object = {} }: PickDataOptions): Record<string, any> => {
+  if (fields.length === 0) return object;
+
+  return _.omit(object, fields);
+};
+
+export { pickData, omitData };

@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from "express";
 import { verify } from "jsonwebtoken";
 import { JWT_SECRET } from "~/configs/config";
-import HttpStatusCode from "~/utils/HttpStatusCode";
+import HttpStatusCode from "~/enums/HttpStatusCode";
 import { AuthFailureError } from "~/responses/error";
 import User from "~/models/User";
 import { AuthenticatedRequest } from "~/types/Request";
