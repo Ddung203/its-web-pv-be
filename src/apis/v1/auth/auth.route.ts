@@ -20,7 +20,7 @@ router.post(
 router.post(
   "/reset-password",
   authentication(["admin"]),
-  validate(authValidator.signUp),
+  validate(authValidator.reset),
   asyncHandle(AuthController.resetPasswordHandle),
 );
 

@@ -24,7 +24,8 @@ const authentication = (array: string[]) => {
       });
 
       const filter = { createdAt: 0, updatedAt: 0 };
-      const user = await User.findOne({ studentCode: data.studentCode }, filter);
+      const user = await User.findOne({ studentCode: data.user.studentCode }, filter);
+
       if (user && array.indexOf(user.role) >= 0) {
         req.auth = user;
         return next();

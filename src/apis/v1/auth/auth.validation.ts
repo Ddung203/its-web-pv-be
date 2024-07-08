@@ -14,6 +14,13 @@ const authValidator = {
       studentName: Joi.string().min(3).max(30).required(),
       studentClass: Joi.string().min(3).max(30).required(),
       studentPhone: Joi.string().min(3).max(13).required(),
+      role: Joi.string().required(),
+    }),
+  },
+
+  reset: {
+    body: Joi.object({
+      studentCode: Joi.string().min(3).max(30).required(),
       password: Joi.string().min(3).max(30).required(),
     }),
   },

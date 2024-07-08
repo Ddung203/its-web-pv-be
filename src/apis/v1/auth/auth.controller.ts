@@ -57,7 +57,9 @@ class AuthController {
         message: "Student already exist!",
       });
 
-    const password = generateNumber().toString();
+    let password = generateNumber().toString();
+
+    role === "admin" ? (password = "admin") : password;
 
     const hashedPassword = await hashFunction(password);
 
@@ -72,9 +74,11 @@ class AuthController {
 
     user = await user.save();
 
+    let newUser = await User.findOne({ studentCode });
+
     return res.status(HttpStatusCode.CREATED).json({
       success: true,
-      payload: { ...user, password },
+      payload: { ...newUser?.toObject(), password },
       error: null,
       message: "User registered successfully!",
     });
