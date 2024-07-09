@@ -9,3 +9,33 @@ interface IUser {
   isOnline?: boolean;
   status?: number;
 }
+
+interface IQuestion {
+  imageURL: string;
+  content: string;
+  options: [
+    {
+      numbering: number;
+      answer: string;
+    },
+  ];
+  correctAnswer: number;
+  level: "easy" | "normal" | "medium" | "hard";
+}
+
+interface IPlay {
+  userID: any;
+  questions: [
+    {
+      questionID: any;
+      answered: boolean;
+      answer: number;
+    },
+  ];
+  timeOut: Date;
+  totalScore: number;
+  interviewScore: number;
+  interviewer: string;
+  comment: string;
+  isInterviewed: boolean;
+}
