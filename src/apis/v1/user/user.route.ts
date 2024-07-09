@@ -11,9 +11,25 @@ const router = express.Router();
 router.get("/list", authentication(["admin"]), asyncHandle(UserController.listUsers));
 router.get("/me", authentication(["admin"]), asyncHandle(UserController.me));
 
-router.get("/user/:studentCode", authentication(["user", "admin"]), asyncHandle(UserController.getUser));
+router.get(
+  "/infor/:studentCode",
+  authentication(["user", "admin"]),
+  validate(userValidator.get),
+  asyncHandle(UserController.getUser),
+);
 
-router.put("/update/:studentCode", authentication(["admin"]), asyncHandle(UserController.updateUser));
-router.delete("/remove/:studentCode", authentication(["admin"]), asyncHandle(UserController.removeUser));
+router.put(
+  "/update/:studentCode",
+  authentication(["admin"]),
+  validate(userValidator.update),
+  asyncHandle(UserController.updateUser),
+);
+
+router.delete(
+  "/remove/:studentCode",
+  authentication(["admin"]),
+  validate(userValidator.remove),
+  asyncHandle(UserController.removeUser),
+);
 
 export { router as userRouter };
