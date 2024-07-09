@@ -30,7 +30,16 @@ const playSchema = new Schema<IPlay, PlayModel>(
 );
 
 playSchema.statics.List = async function ({ skip = 0, limit = 500, sort = { createdAt: -1 }, filter = {} }) {
-  const data = await this.find(filter, { createdAt: 0, updatedAt: 0, password: 0, __v: 0 })
+  const data = await this.find(filter, { createdAt: 0, updatedAt: 0, password: 0 })
+    .populate({
+      path: "userID",
+      select: "studentName studentCode studentClass studentPhone",
+      populate: [{ path: "_id", select: "content" }],
+    })
+    .populate({
+      path: "questions.questionID",
+      select: "-correctAnswer",
+    })
     .sort(sort)
     .skip(+skip)
     .limit(+limit)
