@@ -30,7 +30,7 @@ const authentication = (array: string[]) => {
         req.auth = user;
         return next();
       } else {
-        throw new AuthFailureError("Invalid token! User does not exist!", HttpStatusCode.UNAUTHORIZED);
+        throw new AuthFailureError("Invalid token! Role does not have access rights!", HttpStatusCode.UNAUTHORIZED);
       }
     } catch (error) {
       next(error);

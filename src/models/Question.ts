@@ -8,6 +8,8 @@ interface QuestionModel extends Model<IQuestion> {
     filter: object;
     sort: object;
   }): Promise<{ data: IUser[]; count: number; limit: number; skip: number }>;
+
+  Random(numQuestions?: number): any;
 }
 
 const questionSchema = new Schema<IQuestion, QuestionModel>(
