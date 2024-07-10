@@ -16,7 +16,7 @@ class QuestionController {
       return res.status(200).json({
         success: true,
         payload: { questions },
-        message: "Get list of questions",
+        message: "Get list of questions!",
       });
     } catch (error) {
       next(error);
@@ -33,7 +33,7 @@ class QuestionController {
         payload: {
           question: newQuestion.toObject(),
         },
-        message: "Question created successfully",
+        message: "Question created successfully!",
       });
     } catch (error) {
       next(error);
@@ -67,7 +67,7 @@ class QuestionController {
         payload: {
           question: updatedQuestion.toObject(),
         },
-        message: "Question updated successfully",
+        message: "Question updated successfully!",
       });
     } catch (error) {
       next(error);
@@ -94,7 +94,7 @@ class QuestionController {
         payload: {
           question: question.toObject(),
         },
-        message: "Question deteted successfully",
+        message: "Question deteted successfully!",
       });
     } catch (error) {
       next(error);

@@ -17,7 +17,7 @@ class UserController {
       return res.status(200).json({
         success: true,
         payload: { users },
-        message: "Get list of users",
+        message: "Get list of users!",
       });
     } catch (error) {
       next(error);
@@ -79,13 +79,13 @@ class UserController {
       const user = await User.findOne({ studentCode: req.params.studentCode });
 
       if (!user) {
-        throw new BadRequestError("User not found");
+        throw new BadRequestError("User not found!");
       }
       await User.findByIdAndDelete(user._id);
 
       return res
         .status(HttpStatusCode.OK)
-        .json({ success: true, payload: { deletedUser: user }, message: "User deleted" });
+        .json({ success: true, payload: { deletedUser: user }, message: "User deleted!" });
     } catch (error) {
       next(error);
     }

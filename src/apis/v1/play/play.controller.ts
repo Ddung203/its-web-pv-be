@@ -20,7 +20,7 @@ class PlayController {
       return res.status(200).json({
         success: true,
         payload: { plays },
-        message: "Get list of plays",
+        message: "Get list of plays!",
       });
     } catch (error) {
       next(error);
@@ -32,7 +32,7 @@ class PlayController {
       const { playID } = req.params;
       const play = await Play.findOne({ _id: validObjectId(playID) });
 
-      if (!play) throw new NotFoundError("Play not found");
+      if (!play) throw new NotFoundError("Play not found!");
 
       await Play.findByIdAndDelete({ _id: play._id });
 
@@ -64,14 +64,14 @@ class PlayController {
           select: "-correctAnswer",
         });
 
-      if (!play) throw new NotFoundError(`Cannot found play by userID: ${userID}`);
+      if (!play) throw new NotFoundError(`Cannot found play by userID: ${userID}!`);
 
       return res.status(HttpStatusCode.OK).json({
         success: true,
         payload: {
           play: play.toObject(),
         },
-        message: "Found play by userID successfully",
+        message: "Found play by userID successfully!",
       });
     } catch (error) {
       next(error);
@@ -98,7 +98,7 @@ class PlayController {
         payload: {
           plays: newPlay,
         },
-        message: "Get leaderboard successfully",
+        message: "Get leaderboard successfully!",
       });
     } catch (error) {
       next(error);
@@ -108,21 +108,21 @@ class PlayController {
   static leaderboardMe = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const { studentCode } = req.auth;
     const user = await User.findOne({ studentCode });
-    if (!user) throw new NotFoundError("User not found");
+    if (!user) throw new NotFoundError("User not found!");
 
     const play = await Play.findOne(
       { userID: user._id },
       { interviewScore: 0, isInterviewed: 0, createdAt: 0, updatedAt: 0, __v: 0 },
     );
 
-    if (!play) throw new NotFoundError(`Cannot find play by me: ${studentCode} - ${req.auth.studentName}`);
+    if (!play) throw new NotFoundError(`Cannot find play by me: ${studentCode} - ${req.auth.studentName}!`);
 
     return res.status(HttpStatusCode.OK).json({
       success: true,
       payload: {
         play,
       },
-      message: "Get leaderboard about me successfully",
+      message: "Get leaderboard about me successfully!",
     });
   };
 
@@ -153,7 +153,7 @@ class PlayController {
             payload: {
               play: r.toObject(),
             },
-            message: "Start play successfully",
+            message: "Start play successfully!",
           });
         } catch (error) {
           next(error);
@@ -169,7 +169,7 @@ class PlayController {
     if (!studentCode) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         success: false,
-        message: "Student code is required",
+        message: "Student code is required!",
       });
     }
 
@@ -178,14 +178,14 @@ class PlayController {
       if (!user) {
         return res.status(HttpStatusCode.NOT_FOUND).json({
           success: false,
-          message: "User not found",
+          message: "User not found!",
         });
       }
 
       if (user.role !== "user") {
         return res.status(HttpStatusCode.BAD_REQUEST).json({
           success: false,
-          message: "User role is not user",
+          message: "User role is not user!",
         });
       }
 
@@ -193,7 +193,7 @@ class PlayController {
       if (!play) {
         return res.status(HttpStatusCode.NOT_FOUND).json({
           success: false,
-          message: "Play session not found",
+          message: "Play session not found!",
         });
       }
 
@@ -206,7 +206,7 @@ class PlayController {
         payload: {
           play: populatedResult.toObject(),
         },
-        message: "End play successfully",
+        message: "End play successfully!",
       });
     } catch (error) {
       next(error);
@@ -218,7 +218,7 @@ class PlayController {
     if (!studentCode) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         success: false,
-        message: "Student code is required",
+        message: "Student code is required!",
       });
     }
 
@@ -227,14 +227,14 @@ class PlayController {
       if (!user) {
         return res.status(HttpStatusCode.NOT_FOUND).json({
           success: false,
-          message: "User not found",
+          message: "User not found!",
         });
       }
 
       if (user.role !== "user") {
         return res.status(HttpStatusCode.BAD_REQUEST).json({
           success: false,
-          message: "User role is not user",
+          message: "User role is not user!",
         });
       }
 
@@ -246,7 +246,7 @@ class PlayController {
       if (!play) {
         return res.status(HttpStatusCode.NOT_FOUND).json({
           success: false,
-          message: "Play session not found",
+          message: "Play session not found!",
         });
       }
 
@@ -255,7 +255,7 @@ class PlayController {
         payload: {
           play: play.toObject(),
         },
-        message: "Continue play successfully",
+        message: "Continue play successfully!",
       });
     } catch (error) {
       next(error);
@@ -266,11 +266,11 @@ class PlayController {
     const { interviewScore, comment, interviewer } = req.body;
 
     try {
-      const play = await Play.findById(req.params.id);
+      const play = await Play.findById(validObjectId(req.params.playID));
       if (!play) {
         return res.status(HttpStatusCode.NOT_FOUND).json({
           success: false,
-          message: "Play session not found",
+          message: "Play session not found!",
         });
       }
 
@@ -286,12 +286,15 @@ class PlayController {
           payload: {
             play: result.toObject(),
           },
-          message: "Interview completed successfully",
+          message: "Interview completed successfully!",
         });
       } else {
         return res.status(HttpStatusCode.FORBIDDEN).json({
           success: false,
-          message: "Student has already been interviewed",
+          payload: {
+            play: play.toObject(),
+          },
+          message: "Student has already been interviewed!",
         });
       }
     } catch (error) {
