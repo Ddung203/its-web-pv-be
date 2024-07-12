@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nodejs
+    container_name: nodejs
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - PORT=$PORT
+      - ENVIRONMENT=$ENVIRONMENT
+      - API_VERSION=$API_VERSION
+      - MONGO_URI=$MONGO_URI
+      - JWT_SECRET=$JWT_SECRET
+    ports:
+      - "8181:8181"
+    volumes:
+      - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  node_modules:
