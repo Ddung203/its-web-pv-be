@@ -11,6 +11,7 @@ interface IUser {
 }
 
 interface IQuestion {
+  code: any;
   imageURL: string;
   content: string;
   options: [

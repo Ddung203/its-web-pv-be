@@ -18,7 +18,14 @@ const app = express();
 // app.set("views", "./src/views");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+
+app.use(
+  cors({
+    origin: ["http://localhost:4173", "http://localhost:5173", "https://its-interview.vercel.app/"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  }),
+);
 // app.use(morgan(":method :url :status :response-time ms"));
 app.use(morgan("dev"));
 app.use(helmet());

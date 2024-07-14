@@ -3,6 +3,7 @@ import { Joi } from "express-validation";
 const questionValidator = {
   create: {
     body: Joi.object({
+      code: Joi.string(),
       imageURL: Joi.string(),
       content: Joi.string().min(1).max(400).required(),
       options: Joi.array().required(),

@@ -17,6 +17,8 @@ router.post(
   asyncHandle(QuestionController.createQuestion),
 );
 
+router.post("/insert", authentication(["admin"]), asyncHandle(QuestionController.insertQuestions));
+
 router.put(
   "/update/:questionID",
   authentication(["admin"]),

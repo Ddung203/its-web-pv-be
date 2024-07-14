@@ -14,6 +14,7 @@ interface QuestionModel extends Model<IQuestion> {
 
 const questionSchema = new Schema<IQuestion, QuestionModel>(
   {
+    code: { type: String, required: false },
     imageURL: { type: String, required: false, default: "" },
     content: { type: String, required: true },
     options: [

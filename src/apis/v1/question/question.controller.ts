@@ -24,9 +24,9 @@ class QuestionController {
   };
 
   static createQuestion = async (req: Request, res: Response, next: NextFunction) => {
-    const { imageURL, content, options, correctAnswer, level } = req.body;
+    const { code, imageURL, content, options, correctAnswer, level } = req.body;
     try {
-      const newQuestion = await Question.create({ imageURL, content, options, correctAnswer, level });
+      const newQuestion = await Question.create({ code, imageURL, content, options, correctAnswer, level });
 
       return res.status(HttpStatusCode.CREATED).json({
         success: true,
@@ -34,6 +34,23 @@ class QuestionController {
           question: newQuestion.toObject(),
         },
         message: "Question created successfully!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static insertQuestions = async (req: Request, res: Response, next: NextFunction) => {
+    const { questions } = req.body;
+    try {
+      const newQuestions = await Question.insertMany(questions);
+
+      return res.status(HttpStatusCode.CREATED).json({
+        success: true,
+        payload: {
+          questions: newQuestions,
+        },
+        message: "Questions created successfully!",
       });
     } catch (error) {
       next(error);
