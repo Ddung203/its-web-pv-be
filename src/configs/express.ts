@@ -10,6 +10,7 @@ import { API_VERSION } from "./config";
 import notFoundHandle from "~/middlewares/notFoundHandle";
 import errorHandle from "~/middlewares/errorHandle";
 import { rateLimitOptions } from "./limit";
+import corsConfiguration from "./cors";
 
 const app = express();
 
@@ -19,13 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  cors({
-    origin: ["http://localhost:4173", "http://localhost:5173", "https://its-interview.vercel.app/"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  }),
-);
+app.use(cors(corsConfiguration));
 // app.use(morgan(":method :url :status :response-time ms"));
 app.use(morgan("dev"));
 app.use(helmet());

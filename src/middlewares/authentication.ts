@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { verify } from "jsonwebtoken";
-import { JWT_SECRET } from "~/configs/config";
+import { JWT_SECRET, API_KEY } from "~/configs/config";
 import HttpStatusCode from "~/enums/HttpStatusCode";
 import { AuthFailureError } from "~/responses/error";
 import User from "~/models/User";
@@ -10,8 +10,14 @@ const authentication = (array: string[]) => {
   return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization?.slice(7);
+      let api_key = req.header("x-api-key");
+
       if (!token) {
         throw new AuthFailureError("Token is required!", HttpStatusCode.UNAUTHORIZED);
+      }
+
+      if (!api_key || api_key !== API_KEY) {
+        throw new AuthFailureError("API Key is missing or invalid!", HttpStatusCode.UNAUTHORIZED);
       }
 
       const data: any = await new Promise((resolve, reject) => {

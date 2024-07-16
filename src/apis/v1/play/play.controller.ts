@@ -80,7 +80,7 @@ class PlayController {
 
   static leaderboard = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const newPlay = await Play.aggregate()
+      let newPlay = await Play.aggregate()
         .project({
           userID: 1,
           interviewer: 1,
@@ -91,7 +91,24 @@ class PlayController {
           score: { $add: ["$totalScore", "$interviewScore"] },
         })
         .sort("-score");
-      await Play.populate(newPlay, { path: "userID", select: { studentCode: 1, studentName: 1, image: 1 } });
+      await Play.populate(newPlay, {
+        path: "userID",
+        select: { studentCode: 1, studentName: 1, studentClass: 1, image: 1 },
+      });
+
+      newPlay = newPlay.map((item) => ({
+        _id: item._id,
+        userID: item.userID._id,
+        studentCode: item.userID.studentCode,
+        studentName: item.userID.studentName,
+        studentClass: item.userID.studentClass,
+        totalScore: item.totalScore,
+        interviewScore: item.interviewScore,
+        isInterviewed: item.isInterviewed,
+        comment: item.comment,
+        interviewer: item.interviewer,
+        score: item.score,
+      }));
 
       return res.status(HttpStatusCode.OK).json({
         success: true,
