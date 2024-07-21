@@ -11,6 +11,7 @@ import notFoundHandle from "~/middlewares/notFoundHandle";
 import errorHandle from "~/middlewares/errorHandle";
 import { rateLimitOptions } from "./limit";
 import corsConfiguration from "./cors";
+import requestLogger from "./requestLogger";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(helmet());
 app.use(methodOverride());
 app.use(compression());
 app.use(rateLimit(rateLimitOptions));
+app.use(requestLogger);
 app.use(API_VERSION, router);
 
 // Error handle
