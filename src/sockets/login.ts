@@ -2,8 +2,11 @@
 import CONST from "~/constants";
 import NAMESPACE from "~/enums/Namespaces";
 import User from "~/models/User";
+import { CDTGlobal } from "~/types/global";
 import jwtHandler from "~/utils/jwtHandle";
 import validObjectId from "~/utils/validObjectId";
+
+declare const global: CDTGlobal;
 
 const errorWithMessage = (socket: any, message: string) => {
   socket.emit(NAMESPACE.AUTH, {
@@ -23,15 +26,15 @@ const success = (socket: any, user: any) => {
         studentName: user.studentName,
       },
     });
-    foo.userCount++;
+    global.userCount++;
   }
 
-  foo.socketList[socket.id] = user._id;
-  foo.userList[user._id] = socket.id;
-  // foo.hshIdSocket[socket.id] = socket;
+  global.socketList[socket.id] = user._id;
+  global.userList[user._id] = socket.id;
+  // global.hshIdSocket[socket.id] = socket;
   user.isOnline = true;
   user.save();
-  console.log(`${foo.userCount} users online now!`);
+  console.log(`${global.userCount} users online now!`);
   console.log(`${user.studentName} - ${user.studentCode} is online!`);
 };
 
@@ -64,7 +67,7 @@ export default function (socket: any) {
             return;
           }
 
-          if (foo.userList.hasOwnProperty(user.id)) {
+          if (global.userList.hasOwnProperty(user.id)) {
             errorWithMessage(socket, "User already online.");
             return;
           }

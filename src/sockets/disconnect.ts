@@ -4,6 +4,9 @@ import CONST from "~/constants";
 import NAMESPACE from "~/enums/Namespaces";
 import { Document, Types } from "mongoose";
 import User from "~/models/User";
+import { CDTGlobal } from "~/types/global";
+
+declare const global: CDTGlobal;
 
 const disconnectSuccess = (
   socket: any,
@@ -15,7 +18,7 @@ const disconnectSuccess = (
   console.log(`${user.studentName} - ${user.studentCode} is now offline`);
   user.isOnline = false;
   if (user.role === "user") {
-    foo.userCount--;
+    global.userCount--;
   }
 
   socket.broadcast.emit(NAMESPACE.AUTH, {
@@ -26,14 +29,14 @@ const disconnectSuccess = (
     },
   });
 
-  delete foo.socketList[socket.id];
-  delete foo.userList[user._id.toString()];
+  delete global.socketList[socket.id];
+  delete global.userList[user._id.toString()];
   user.save();
-  console.log(`${foo.userCount} users online now!`);
+  console.log(`${global.userCount} users online now!`);
 };
 
 const handleUserDisconnection = async (socket: any) => {
-  const userId = foo.socketList[socket.id];
+  const userId = global.socketList[socket.id];
   if (!userId) {
     console.log("No user found for this socket ID");
     return;

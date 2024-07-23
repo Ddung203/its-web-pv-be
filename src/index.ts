@@ -4,7 +4,9 @@ import app from "./configs/express";
 import { connectDB } from "./configs/mongoose";
 import { ALLOWED_IP, ENVIRONMENT, PORT } from "./configs/config";
 import socketMain from "./sockets";
-import { Socket } from "dgram";
+import { CDTGlobal } from "./types/global";
+
+declare const global: CDTGlobal;
 
 const server = http.createServer(app);
 
@@ -17,23 +19,15 @@ const io = new Server(server, {
   },
 });
 
-interface Foo {
-  io: Server;
-  socketList: Record<string, Socket>;
-  userList: Record<string, any>; // Thay any bằng kiểu dữ liệu người dùng của bạn
-  userCount: number;
-}
-
-const foo: Foo = {
-  io: io,
-  socketList: {},
-  userList: {},
-  userCount: 0,
-};
+global.io = io;
+global.socketList = {};
+global.userList = {};
+global.userCount = 0;
 
 server.listen(PORT, async () => {
   await connectDB();
-  console.log("\x1b[33m%s\x1b[0m", `Server started on port ${PORT} (${ENVIRONMENT} mode)`);
 
-  foo.io.on("connection", (socket: any) => socketMain(socket));
+  global.io.on("connection", (socket: any) => socketMain(socket));
+
+  console.log("\x1b[33m%s\x1b[0m", `Server started on port ${PORT} (${ENVIRONMENT} mode)`);
 });
