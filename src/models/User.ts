@@ -18,7 +18,7 @@ const userSchema = new Schema<IUser, UserModel>(
     studentPhone: { type: String, required: true },
     password: { type: String, required: true },
     image: { type: String },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
+    role: { type: String, enum: ["user", "admin", "interviewer", "guest"], default: "user" },
     isOnline: { type: Boolean, default: false },
     status: { type: Number, default: 0 },
   },

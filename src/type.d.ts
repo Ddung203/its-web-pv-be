@@ -5,7 +5,7 @@ interface IUser {
   studentPhone: string;
   password: string;
   image?: string;
-  role: "user" | "admin";
+  role: "user" | "admin" | "interviewer" | "guest";
   isOnline?: boolean;
   status?: number;
 }

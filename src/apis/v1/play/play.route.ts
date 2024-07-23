@@ -27,6 +27,6 @@ router.route("/end").get(authentication(["user"]), asyncHandle(PlayController.en
 
 router.route("/continue").get(authentication(["user"]), asyncHandle(PlayController.continuePlay));
 
-router.post("/interview/:playID", authentication(["admin", "judge"]), PlayController.interview);
+router.post("/interview/:playID", authentication(["admin", "interviewer"]), PlayController.interview);
 
 export { router as playRouter };

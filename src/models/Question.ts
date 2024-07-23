@@ -52,6 +52,15 @@ questionSchema.statics.Random = async function (numQuestions = 20) {
     selectedQuestions.forEach((item) => returnQuestions.push({ questionId: item._id, answer: false }));
   }
 
+  if (returnQuestions.length < numQuestions) {
+    for (const level of levels) {
+      const questions = await this.find({ level }).exec();
+      const shuffledQuestions = _.shuffle(questions);
+      const selectedQuestions = shuffledQuestions.slice(0, questionsPerLevel);
+      selectedQuestions.forEach((item) => returnQuestions.push({ questionId: item._id, answer: false }));
+    }
+  }
+
   return _.shuffle(returnQuestions).slice(0, numQuestions);
 };
 
