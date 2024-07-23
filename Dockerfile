@@ -9,8 +9,11 @@ COPY . .
 # Installing dependencies
 RUN yarn
 
+# Set node environment
+ENV NODE_ENV production
+
 # Starting our application
-CMD [ "yarn", "s:dev" ]
+CMD [ "yarn", "pro" ]
 
 # Exposing server port
 EXPOSE 8181
