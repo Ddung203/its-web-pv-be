@@ -11,6 +11,10 @@ const router = express.Router();
 router.route("/list").get(authentication(["admin"]), asyncHandle(PlayController.listPlays));
 
 router
+  .route("/status")
+  .get(authentication(["admin", "interviewer"]), asyncHandle(PlayController.getListPlayByInterviewed));
+
+router
   .route("/:playID")
   .delete(authentication(["admin"]), validate(playValidator.remove), asyncHandle(PlayController.remove));
 

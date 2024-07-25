@@ -3,6 +3,7 @@ interface IUser {
   studentName: string;
   studentClass: string;
   studentPhone: string;
+  studentHometown: string;
   password: string;
   image?: string;
   role: "user" | "admin" | "interviewer" | "guest";
@@ -35,6 +36,7 @@ interface IPlay {
   ];
   timeOut: Date;
   totalScore: number;
+  score: number;
   interviewScore: number;
   interviewer: string;
   comment: string;

@@ -9,6 +9,9 @@ const router = express.Router();
 
 // User endpoint
 router.get("/list", authentication(["admin"]), asyncHandle(UserController.listUsers));
+
+router.get("/role", authentication(["admin", "interviewer"]), asyncHandle(UserController.getListUsersByRole));
+
 router.get("/me", authentication(["admin"]), asyncHandle(UserController.me));
 
 router.get(

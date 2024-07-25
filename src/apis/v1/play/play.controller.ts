@@ -27,6 +27,31 @@ class PlayController {
     }
   };
 
+  static getListPlayByInterviewed = async (req: Request, res: Response, next: NextFunction) => {
+    const interviewed = req.query.interviewed || false;
+
+    try {
+      const plays = await Play.find({ isInterviewed: interviewed })
+        .populate({
+          path: "userID",
+          select: "studentCode studentName studentClass studentHometown",
+          populate: [{ path: "_id", select: "content" }],
+        })
+        .populate({
+          path: "questions.questionID",
+          select: "-correctAnswer",
+        });
+
+      return res.status(200).json({
+        success: true,
+        payload: { plays },
+        message: `isInterviewed: ${interviewed}`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   static remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { playID } = req.params;
@@ -84,13 +109,14 @@ class PlayController {
         .project({
           userID: 1,
           interviewer: 1,
-          totalScore: 1,
           interviewScore: 1,
           isInterviewed: 1,
           comment: 1,
-          score: { $add: ["$totalScore", "$interviewScore"] },
+          score: 1,
+          totalScore: { $add: ["$score", "$interviewScore"] },
         })
-        .sort("-score");
+        .sort("-totalScore");
+
       await Play.populate(newPlay, {
         path: "userID",
         select: { studentCode: 1, studentName: 1, studentClass: 1, image: 1 },

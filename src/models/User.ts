@@ -16,6 +16,7 @@ const userSchema = new Schema<IUser, UserModel>(
     studentName: { type: String, required: true },
     studentClass: { type: String, required: true },
     studentPhone: { type: String, required: true },
+    studentHometown: { type: String, required: false, default: "No information" },
     password: { type: String, required: true },
     image: { type: String },
     role: { type: String, enum: ["user", "admin", "interviewer", "guest"], default: "user" },

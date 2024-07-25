@@ -13,6 +13,7 @@ const authValidator = {
       studentCode: Joi.string().min(3).max(30).required(),
       studentName: Joi.string().min(3).max(30).required(),
       studentClass: Joi.string().min(3).max(30).required(),
+      studentHometown: Joi.string(),
       studentPhone: Joi.string().min(3).max(13).required(),
       role: Joi.string().required(),
     }),

@@ -8,6 +8,7 @@ import jwtHandler from "~/utils/jwtHandle";
 import HttpStatusCode from "~/enums/HttpStatusCode";
 import ReasonPhrase from "~/enums/ReasonPhrase";
 import generateNumber from "~/utils/generateNumber";
+import roles from "~/constants/roles";
 
 class AuthController {
   static loginHandle = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -40,7 +41,7 @@ class AuthController {
 
   //signUpHandle
   static signUpHandle = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const { studentCode, studentName, studentClass, studentPhone, role } = req.body;
+    const { studentCode, studentName, studentClass, studentHometown, studentPhone, role } = req.body;
     const duplicate = await User.findOne({ studentCode });
 
     if (duplicate)
@@ -50,12 +51,19 @@ class AuthController {
           studentCode,
           studentName,
           studentClass,
+          studentHometown,
           studentPhone,
           role,
         },
         error: { reason: ReasonPhrase.CONFLICT },
         message: "Student already exist!",
       });
+
+    const isRoleActive = roles.some((r) => role === r);
+
+    if (!isRoleActive) {
+      throw new BadRequestError("Role is not active!");
+    }
 
     let password = generateNumber().toString();
 
@@ -67,9 +75,10 @@ class AuthController {
       studentCode,
       studentName,
       studentClass,
+      studentHometown,
       studentPhone,
       password: hashedPassword,
-      role: role === "admin" ? "admin" : "user",
+      role,
     });
 
     user = await user.save();

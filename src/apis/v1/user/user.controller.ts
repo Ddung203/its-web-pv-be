@@ -24,6 +24,21 @@ class UserController {
     }
   };
 
+  static getListUsersByRole = async (req: Request, res: Response, next: NextFunction) => {
+    const role = req.query.role || "guest";
+
+    try {
+      const users = await User.find({ role }, "studentCode studentName studentClass studentHometown");
+      return res.status(200).json({
+        success: true,
+        payload: { users },
+        message: `Get list of ${role} users!`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   static me = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     return res.status(200).json({
       success: true,

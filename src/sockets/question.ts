@@ -29,7 +29,7 @@ const scoreCalculation = async (play: any) => {
         score += 10;
       }
     }
-    result.totalScore = score;
+    result.score = score;
     await result.save();
     return result;
   }
