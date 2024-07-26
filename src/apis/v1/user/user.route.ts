@@ -8,15 +8,15 @@ import authentication from "~/middlewares/authentication";
 const router = express.Router();
 
 // User endpoint
-router.get("/list", authentication(["admin"]), asyncHandle(UserController.listUsers));
+router.get("/list", authentication(["admin", "interviewer"]), asyncHandle(UserController.listUsers));
 
 router.get("/role", authentication(["admin", "interviewer"]), asyncHandle(UserController.getListUsersByRole));
 
-router.get("/me", authentication(["admin"]), asyncHandle(UserController.me));
+router.get("/me", authentication(["admin", "interviewer", "user"]), asyncHandle(UserController.me));
 
 router.get(
   "/infor/:studentCode",
-  authentication(["user", "admin"]),
+  authentication(["user", "admin", "interviewer"]),
   validate(userValidator.get),
   asyncHandle(UserController.getUser),
 );

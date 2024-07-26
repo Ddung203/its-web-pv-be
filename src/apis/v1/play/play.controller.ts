@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import HttpStatusCode from "../../../enums/HttpStatusCode";
 import { BadRequestError, ConflictRequestError, NotFoundError } from "~/responses/error";
-import mongoose from "mongoose";
 import Play from "~/models/Play";
 import validObjectId from "~/utils/validObjectId";
 import { AuthenticatedRequest } from "~/types/Request";
@@ -31,16 +30,12 @@ class PlayController {
     const interviewed = req.query.interviewed || false;
 
     try {
-      const plays = await Play.find({ isInterviewed: interviewed })
-        .populate({
-          path: "userID",
-          select: "studentCode studentName studentClass studentHometown",
-          populate: [{ path: "_id", select: "content" }],
-        })
-        .populate({
-          path: "questions.questionID",
-          select: "-correctAnswer",
-        });
+      // ! Warning
+      const plays = await Play.find({ isInterviewed: interviewed }).populate({
+        path: "userID",
+        select: "studentCode studentName studentClass studentHometown",
+        populate: [{ path: "_id", select: "content" }],
+      });
 
       return res.status(200).json({
         success: true,
@@ -324,6 +319,7 @@ class PlayController {
         play.isInterviewed = true;
 
         const result = await play.save();
+
         return res.status(HttpStatusCode.OK).json({
           success: true,
           payload: {
