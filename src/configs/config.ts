@@ -17,6 +17,9 @@ interface IConfig {
   JWT_SECRET: string;
   ALLOWED_IP: string;
   API_KEY: string;
+  RD_PASSWORD: string;
+  RD_HOST: string;
+  RD_PORT: any;
 }
 
 const currentEnvironment: Environment = (process.env.NODE_ENV as Environment) || "development";
@@ -32,6 +35,9 @@ const environmentConfig: Record<Environment, Partial<IConfig>> = {
     JWT_SECRET: "ES2USMdGFxZ3MuLNQrb9",
     ALLOWED_IP: "*",
     API_KEY: "e3090eddbe7dd2907912b221b2513be4",
+    RD_PASSWORD: "",
+    RD_HOST: "localhost",
+    RD_PORT: 6379,
   },
   production: {
     ENVIRONMENT: currentEnvironment,
@@ -41,6 +47,9 @@ const environmentConfig: Record<Environment, Partial<IConfig>> = {
     JWT_SECRET: process.env.JWT_SECRET,
     ALLOWED_IP: process.env.ALLOWED_IP,
     API_KEY: process.env.API_KEY,
+    RD_PASSWORD: process.env.RD_PASSWORD,
+    RD_HOST: process.env.RD_HOST,
+    RD_PORT: process.env.RD_PORT,
   },
   staging: {
     ENVIRONMENT: currentEnvironment,
@@ -50,6 +59,9 @@ const environmentConfig: Record<Environment, Partial<IConfig>> = {
     JWT_SECRET: "StagingSecret",
     ALLOWED_IP: "*",
     API_KEY: "StagingAPIKey",
+    RD_PASSWORD: "",
+    RD_HOST: "localhost",
+    RD_PORT: 6379,
   },
 };
 
@@ -62,4 +74,15 @@ const configs: IConfig = {
   ...environmentConfig[currentEnvironment],
 };
 
-export const { ENVIRONMENT, PORT, API_VERSION, MONGO_URI, JWT_SECRET, ALLOWED_IP, API_KEY } = configs;
+export const {
+  ENVIRONMENT,
+  PORT,
+  API_VERSION,
+  MONGO_URI,
+  JWT_SECRET,
+  ALLOWED_IP,
+  API_KEY,
+  RD_PASSWORD,
+  RD_HOST,
+  RD_PORT,
+} = configs;

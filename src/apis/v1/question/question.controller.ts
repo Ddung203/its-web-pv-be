@@ -3,16 +3,51 @@ import HttpStatusCode from "../../../enums/HttpStatusCode";
 import { BadRequestError } from "~/responses/error";
 import Question from "~/models/Question";
 import mongoose from "mongoose";
+import { AuthenticatedRequest } from "~/types/Request";
+import client from "~/databases/redis.database";
+import { CDTGlobal } from "~/types/global";
 
 class QuestionController {
-  static listQuestions = async (req: Request, res: Response, next: NextFunction) => {
+  static listQuestions = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const start = process.hrtime();
+
     const limit = parseInt(req.query.limit as string, 10) || 50;
     const skip = parseInt(req.query.skip as string, 10) || 0;
     const filter = req.query.filter ? JSON.parse(req.query.filter as string) : {};
     const sort = req.query.sort ? JSON.parse(req.query.sort as string) : { createdAt: -1 };
 
     try {
+      const key = `user:${req.auth.studentCode}:question`;
+
+      const cachedData = await client.get(key);
+
+      if (cachedData) {
+        const questions = JSON.parse(cachedData);
+
+        const diff = process.hrtime(start);
+        const responseTime = (diff[0] * 1e9 + diff[1]) / 1e6; // milliseconds
+
+        console.log(`Response time from cache: ${responseTime}ms`);
+
+        return res.status(200).json({
+          success: true,
+          payload: { questions },
+          message: "Retrieved list of questions from cache!",
+        });
+      }
+
       const questions = await Question.List({ limit, skip, filter, sort });
+      const value = JSON.stringify(questions);
+
+      await client.set(key, value, {
+        EX: 60,
+      });
+
+      const diff = process.hrtime(start);
+      const responseTime = (diff[0] * 1e9 + diff[1]) / 1e6; // milliseconds
+
+      console.log(`Response time from DB: ${responseTime}ms`);
+
       return res.status(200).json({
         success: true,
         payload: { questions },
@@ -23,9 +58,11 @@ class QuestionController {
     }
   };
 
-  static createQuestion = async (req: Request, res: Response, next: NextFunction) => {
+  static createQuestion = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const { code, imageURL, content, options, correctAnswer, level } = req.body;
     try {
+      const key = `user:${req.auth.studentCode}:question`;
+      client.del(key);
       const newQuestion = await Question.create({ code, imageURL, content, options, correctAnswer, level });
 
       return res.status(HttpStatusCode.CREATED).json({
@@ -40,9 +77,12 @@ class QuestionController {
     }
   };
 
-  static insertQuestions = async (req: Request, res: Response, next: NextFunction) => {
+  static insertQuestions = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const { questions } = req.body;
     try {
+      const key = `user:${req.auth.studentCode}:question`;
+      client.del(key);
+
       const newQuestions = await Question.insertMany(questions);
 
       return res.status(HttpStatusCode.CREATED).json({
