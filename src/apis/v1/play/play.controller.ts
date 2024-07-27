@@ -6,6 +6,7 @@ import validObjectId from "~/utils/validObjectId";
 import { AuthenticatedRequest } from "~/types/Request";
 import User from "~/models/User";
 import Question from "~/models/Question";
+import RedisService from "~/services/redis.service";
 
 class PlayController {
   static listPlays = async (req: Request, res: Response, next: NextFunction) => {
@@ -130,6 +131,16 @@ class PlayController {
         interviewer: item.interviewer,
         score: item.score,
       }));
+
+      RedisService.set(
+        "leaderboard",
+        {
+          plays: newPlay,
+        },
+        {
+          EX: 3600,
+        },
+      );
 
       return res.status(HttpStatusCode.OK).json({
         success: true,
@@ -319,6 +330,8 @@ class PlayController {
         play.isInterviewed = true;
 
         const result = await play.save();
+
+        RedisService.del(["leaderboard"]);
 
         return res.status(HttpStatusCode.OK).json({
           success: true,
