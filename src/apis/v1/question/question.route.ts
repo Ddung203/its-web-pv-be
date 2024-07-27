@@ -4,11 +4,17 @@ import asyncHandle from "~/utils/asyncHandle";
 import authentication from "~/middlewares/authentication";
 import QuestionController from "./question.controller";
 import questionValidator from "./question.validation";
+import cacheMiddleware from "~/middlewares/cacheMiddleware";
 
 const router = express.Router();
 
 // Question endpoint
-router.get("/list", authentication(["admin"]), asyncHandle(QuestionController.listQuestions));
+router.get(
+  "/list",
+  authentication(["admin"]),
+  cacheMiddleware("questions"),
+  asyncHandle(QuestionController.listQuestions),
+);
 
 router.post(
   "/create",
