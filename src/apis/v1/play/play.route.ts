@@ -4,6 +4,7 @@ import asyncHandle from "~/utils/asyncHandle";
 import authentication from "~/middlewares/authentication";
 import playValidator from "./play.validation";
 import PlayController from "./play.controller";
+import cacheMiddleware from "~/middlewares/cacheMiddleware";
 
 const router = express.Router();
 
@@ -20,7 +21,9 @@ router
 
 router.route("/user/:userID").get(authentication(["admin"]), asyncHandle(PlayController.getPlayByUserID));
 
-router.route("/leaderboard").get(authentication(["admin"]), asyncHandle(PlayController.leaderboard));
+router
+  .route("/leaderboard")
+  .get(authentication(["admin"]), cacheMiddleware("leaderboard"), asyncHandle(PlayController.leaderboard));
 
 router.route("/leaderboard/me").get(authentication(["user"]), asyncHandle(PlayController.leaderboardMe));
 
