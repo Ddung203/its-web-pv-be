@@ -10,11 +10,16 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
+      - NODE_ENV=$NODE_ENV
       - PORT=$PORT
-      - ENVIRONMENT=$ENVIRONMENT
       - API_VERSION=$API_VERSION
       - MONGO_URI=$MONGO_URI
       - JWT_SECRET=$JWT_SECRET
+      - API_KEY=$API_KEY
+      - ALLOWED_IP=$ALLOWED_IP
+      - RD_PASSWORD=$RD_PASSWORD
+      - RD_HOST=$RD_HOST
+      - RD_PORT=$RD_PORT
     ports:
       - "8181:8181"
     volumes:
