@@ -7,6 +7,24 @@ import { AuthenticatedRequest } from "~/types/Request";
 import User from "~/models/User";
 import Question from "~/models/Question";
 import RedisService from "~/services/redis.service";
+import { Types } from "mongoose";
+
+interface PopulatedPlay {
+  _id: Types.ObjectId;
+  userID: {
+    _id: Types.ObjectId;
+    studentCode: string;
+    studentName: string;
+    studentClass: string;
+    image: string;
+  };
+  interviewer: string;
+  interviewScore: number;
+  isInterviewed: boolean;
+  comment: string;
+  score: number;
+  totalScore: number;
+}
 
 class PlayController {
   static listPlays = async (req: Request, res: Response, next: NextFunction) => {
@@ -101,7 +119,7 @@ class PlayController {
 
   static leaderboard = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let newPlay = await Play.aggregate()
+      const plays = await Play.aggregate<PopulatedPlay>()
         .project({
           userID: 1,
           interviewer: 1,
@@ -111,14 +129,18 @@ class PlayController {
           score: 1,
           totalScore: { $add: ["$score", "$interviewScore"] },
         })
-        .sort("-totalScore");
+        .sort({ totalScore: -1 });
 
-      await Play.populate(newPlay, {
+      if (!plays || plays.length === 0) {
+        throw new BadRequestError("Dữ liệu trống!");
+      }
+
+      await Play.populate(plays, {
         path: "userID",
         select: { studentCode: 1, studentName: 1, studentClass: 1, image: 1 },
       });
 
-      newPlay = newPlay.map((item) => ({
+      const formattedPlays = plays.map((item) => ({
         _id: item._id,
         userID: item.userID._id,
         studentCode: item.userID.studentCode,
@@ -132,10 +154,11 @@ class PlayController {
         score: item.score,
       }));
 
+      // Caching results
       RedisService.set(
         "leaderboard",
         {
-          plays: newPlay,
+          plays: formattedPlays,
         },
         {
           EX: 3600,
@@ -145,7 +168,7 @@ class PlayController {
       return res.status(HttpStatusCode.OK).json({
         success: true,
         payload: {
-          plays: newPlay,
+          plays: formattedPlays,
         },
         message: "Get leaderboard successfully!",
       });

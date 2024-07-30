@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "~/types/Request";
 import { AuthFailureError, BadRequestError } from "~/responses/error";
-import { compareFunction, hashFunction } from "~/utils/bcryptHandle";
+import { compareFunction, compareString, hashFunction } from "~/utils/bcryptHandle";
 import { omitData } from "~/utils/pick";
 import User from "~/models/User";
 import jwtHandler from "~/utils/jwtHandle";
@@ -18,19 +18,23 @@ class AuthController {
 
     if (!user) throw new AuthFailureError("Invalid student code or password!");
 
-    if (!(await compareFunction(password, user.password)))
-      throw new AuthFailureError("Invalid student code or password!");
+    if (user.role === "admin") {
+      if (!(await compareFunction(password, user.password)))
+        throw new AuthFailureError("Invalid student code or password!");
+    } else {
+      if (!compareString(password, user.password)) throw new AuthFailureError("Invalid student code or password!");
+    }
 
     if (user.isOnline) throw new AuthFailureError("User is already logged in!");
 
     const { refreshToken, accessToken } = await jwtHandler.createTokenPair({
-      user: omitData({ fields: ["password"], object: user }),
+      user: omitData({ fields: ["password", "createdAt", "updatedAt", "__v"], object: user.toObject() }),
     });
 
     return res.status(HttpStatusCode.OK).json({
       success: true,
       payload: {
-        user: omitData({ fields: ["password"], object: user }),
+        user: omitData({ fields: ["password", "createdAt", "updatedAt", "__v"], object: user.toObject() }),
         refreshToken,
         accessToken,
       },
@@ -65,11 +69,13 @@ class AuthController {
       throw new BadRequestError("Role is not active!");
     }
 
-    let password = generateNumber().toString();
+    let password = "";
 
-    role === "admin" ? (password = "admin") : password;
-
-    const hashedPassword = await hashFunction(password);
+    if (role === "admin") {
+      password = await hashFunction("admin");
+    } else {
+      password = generateNumber().toString();
+    }
 
     let user = new User({
       studentCode,
@@ -77,7 +83,7 @@ class AuthController {
       studentClass,
       studentHometown,
       studentPhone,
-      password: hashedPassword,
+      password,
       role,
     });
 

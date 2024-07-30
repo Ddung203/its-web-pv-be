@@ -24,14 +24,18 @@ class UserController {
     }
   };
 
-  static getListUsersByRole = async (req: Request, res: Response, next: NextFunction) => {
+  static getListUsersByRole = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const role = req.query.role || "guest";
 
     try {
-      const users = await User.find(
-        { role },
-        "studentCode studentName studentClass studentHometown studentPhone status role",
-      );
+      let filter = "studentCode studentName studentClass studentHometown studentPhone status role";
+
+      if (req.auth.role === "admin") {
+        filter = `${filter} password`;
+      }
+
+      const users = await User.find({ role }, filter);
+
       return res.status(200).json({
         success: true,
         payload: { users },

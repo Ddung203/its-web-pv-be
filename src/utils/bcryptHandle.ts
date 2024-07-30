@@ -10,4 +10,8 @@ const compareFunction = async (plaintext: string, hashedString: string) => {
   return bcrypt.compareSync(plaintext, hashedString);
 };
 
-export { hashFunction, compareFunction };
+const compareString = async (plaintext: string, hashedString: string) => {
+  return plaintext === hashedString;
+};
+
+export { hashFunction, compareFunction, compareString };
