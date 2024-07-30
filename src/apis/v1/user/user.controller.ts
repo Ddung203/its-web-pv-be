@@ -28,7 +28,10 @@ class UserController {
     const role = req.query.role || "guest";
 
     try {
-      const users = await User.find({ role }, "studentCode studentName studentClass studentHometown");
+      const users = await User.find(
+        { role },
+        "studentCode studentName studentClass studentHometown studentPhone status role",
+      );
       return res.status(200).json({
         success: true,
         payload: { users },
@@ -63,7 +66,7 @@ class UserController {
     try {
       const user = await User.findOne({ studentCode: req.params.studentCode });
 
-      const { studentCode, studentName, studentClass, studentPhone } = req.body;
+      const { studentName, studentClass, studentPhone } = req.body;
 
       if (!user) {
         throw new BadRequestError("User not found!");
@@ -71,7 +74,7 @@ class UserController {
 
       const updatedUser = await User.findByIdAndUpdate(
         user._id,
-        { studentCode, studentName, studentClass, studentPhone },
+        { studentName, studentClass, studentPhone },
         { new: true, runValidators: true },
       );
 

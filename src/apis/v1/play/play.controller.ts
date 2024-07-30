@@ -330,6 +330,7 @@ class PlayController {
         play.isInterviewed = true;
 
         const result = await play.save();
+        await User.findOneAndUpdate({ _id: play.userID }, { status: 1 });
 
         RedisService.del(["leaderboard"]);
 
