@@ -1,5 +1,5 @@
 import { Schema, Model, model } from "mongoose";
-import _ from "lodash";
+import shuffleArray from "~/utils/shuffleArray";
 
 interface QuestionModel extends Model<IQuestion> {
   List(filter: {
@@ -7,9 +7,9 @@ interface QuestionModel extends Model<IQuestion> {
     skip: number;
     filter: object;
     sort: object;
-  }): Promise<{ data: IUser[]; count: number; limit: number; skip: number }>;
+  }): Promise<{ data: IQuestion[]; count: number; limit: number; skip: number }>;
 
-  Random(numQuestions?: number): any;
+  Random(numQuestions?: number): Promise<Array<{ questionId: string; answer: boolean }>>;
 }
 
 const questionSchema = new Schema<IQuestion, QuestionModel>(
@@ -29,7 +29,12 @@ const questionSchema = new Schema<IQuestion, QuestionModel>(
   { collection: "questions", timestamps: true },
 );
 
-questionSchema.statics.List = async function ({ skip = 0, limit = 500, sort = { createdAt: -1 }, filter = {} }) {
+questionSchema.statics.List = async function ({
+  skip = 0,
+  limit = 500,
+  sort = { createdAt: -1 },
+  filter = {},
+}): Promise<{ data: IQuestion[]; count: number; limit: number; skip: number }> {
   const data = await this.find(filter, { createdAt: 0, updatedAt: 0, password: 0, __v: 0 })
     .sort(sort)
     .skip(+skip)
@@ -39,29 +44,32 @@ questionSchema.statics.List = async function ({ skip = 0, limit = 500, sort = { 
   return { data, count, limit, skip };
 };
 
-questionSchema.statics.Random = async function (numQuestions = 20) {
+questionSchema.statics.Random = async function (
+  numQuestions = 20,
+): Promise<Array<{ questionId: string; answer: boolean }>> {
   const levels = ["easy", "normal", "medium", "hard"];
   const questionsPerLevel = Math.ceil(numQuestions / levels.length);
 
-  const returnQuestions: any[] = [];
+  const returnQuestions: Array<{ questionId: string; answer: boolean }> = [];
 
   for (const level of levels) {
     const questions = await this.find({ level }).exec();
-    const shuffledQuestions = _.shuffle(questions);
+    const shuffledQuestions = shuffleArray(questions); // Sử dụng shuffleArray
     const selectedQuestions = shuffledQuestions.slice(0, questionsPerLevel);
-    selectedQuestions.forEach((item) => returnQuestions.push({ questionId: item._id, answer: false }));
+    selectedQuestions.forEach((item) => returnQuestions.push({ questionId: item._id.toString(), answer: false }));
   }
 
+  // Đảm bảo đủ số lượng câu hỏi yêu cầu
   if (returnQuestions.length < numQuestions) {
     for (const level of levels) {
       const questions = await this.find({ level }).exec();
-      const shuffledQuestions = _.shuffle(questions);
+      const shuffledQuestions = shuffleArray(questions);
       const selectedQuestions = shuffledQuestions.slice(0, questionsPerLevel);
-      selectedQuestions.forEach((item) => returnQuestions.push({ questionId: item._id, answer: false }));
+      selectedQuestions.forEach((item) => returnQuestions.push({ questionId: item._id.toString(), answer: false }));
     }
   }
 
-  return _.shuffle(returnQuestions).slice(0, numQuestions);
+  return shuffleArray(returnQuestions).slice(0, numQuestions);
 };
 
 const Question: QuestionModel = model<IQuestion, QuestionModel>("Question", questionSchema);
