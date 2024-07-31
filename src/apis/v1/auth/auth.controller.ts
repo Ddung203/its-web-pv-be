@@ -12,91 +12,85 @@ import roles from "~/constants/roles";
 
 class AuthController {
   static loginHandle = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const { studentCode, password } = req.body;
+    try {
+      const { studentCode, password } = req.body;
+      const user = await User.findOne({ studentCode });
 
-    const user = await User.findOne({ studentCode });
-
-    if (!user) throw new AuthFailureError("Invalid student code or password!");
-
-    if (user.role === "admin") {
-      if (!(await compareFunction(password, user.password)))
+      if (
+        !user ||
+        (user.role === "admin" && !(await compareFunction(password, user.password))) ||
+        (user.role !== "admin" && !compareString(password, user.password))
+      ) {
         throw new AuthFailureError("Invalid student code or password!");
-    } else {
-      if (!compareString(password, user.password)) throw new AuthFailureError("Invalid student code or password!");
-    }
+      }
 
-    if (user.isOnline) throw new AuthFailureError("User is already logged in!");
+      if (user.isOnline) {
+        throw new AuthFailureError("User is already logged in!");
+      }
 
-    const { refreshToken, accessToken } = await jwtHandler.createTokenPair({
-      user: omitData({ fields: ["password", "createdAt", "updatedAt", "__v"], object: user.toObject() }),
-    });
-
-    return res.status(HttpStatusCode.OK).json({
-      success: true,
-      payload: {
+      const { refreshToken, accessToken } = await jwtHandler.createTokenPair({
         user: omitData({ fields: ["password", "createdAt", "updatedAt", "__v"], object: user.toObject() }),
-        refreshToken,
-        accessToken,
-      },
-      error: null,
-      message: "User logged in successfully!",
-    });
+      });
+
+      return res.status(HttpStatusCode.OK).json({
+        success: true,
+        payload: {
+          user: omitData({ fields: ["password", "createdAt", "updatedAt", "__v"], object: user.toObject() }),
+          refreshToken,
+          accessToken,
+        },
+        error: null,
+        message: "User logged in successfully!",
+      });
+    } catch (error) {
+      next(error);
+    }
   };
 
   //signUpHandle
   static signUpHandle = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const { studentCode, studentName, studentClass, studentHometown, studentPhone, role } = req.body;
-    const duplicate = await User.findOne({ studentCode });
+    try {
+      const { studentCode, studentName, studentClass, studentHometown, studentPhone, role } = req.body;
+      const duplicate = await User.findOne({ studentCode });
 
-    if (duplicate)
-      return res.status(HttpStatusCode.CONFLICT).json({
-        success: false,
-        payload: {
-          studentCode,
-          studentName,
-          studentClass,
-          studentHometown,
-          studentPhone,
-          role,
-        },
-        error: { reason: ReasonPhrase.CONFLICT },
-        message: "Student already exist!",
+      if (duplicate) {
+        return res.status(HttpStatusCode.CONFLICT).json({
+          success: false,
+          payload: { studentCode, studentName, studentClass, studentHometown, studentPhone, role },
+          error: { reason: ReasonPhrase.CONFLICT },
+          message: "Student already exists!",
+        });
+      }
+
+      const isRoleActive = roles.some((r) => role === r);
+      if (!isRoleActive) {
+        throw new BadRequestError("Role is not active!");
+      }
+
+      let password = role === "admin" ? await hashFunction("admin") : generateNumber().toString();
+
+      let user = new User({
+        studentCode,
+        studentName,
+        studentClass,
+        studentHometown,
+        studentPhone,
+        password,
+        role,
       });
 
-    const isRoleActive = roles.some((r) => role === r);
+      user = await user.save();
+      const newUser = await User.findOne({ studentCode });
 
-    if (!isRoleActive) {
-      throw new BadRequestError("Role is not active!");
+      return res.status(HttpStatusCode.CREATED).json({
+        success: true,
+        payload: { ...newUser?.toObject(), password },
+        error: null,
+        message: "User registered successfully!",
+      });
+    } catch (error) {
+      next(error);
     }
-
-    let password = "";
-
-    if (role === "admin") {
-      password = await hashFunction("admin");
-    } else {
-      password = generateNumber().toString();
-    }
-
-    let user = new User({
-      studentCode,
-      studentName,
-      studentClass,
-      studentHometown,
-      studentPhone,
-      password,
-      role,
-    });
-
-    user = await user.save();
-
-    let newUser = await User.findOne({ studentCode });
-
-    return res.status(HttpStatusCode.CREATED).json({
-      success: true,
-      payload: { ...newUser?.toObject(), password },
-      error: null,
-      message: "User registered successfully!",
-    });
   };
 
   // resetPasswordHandle
