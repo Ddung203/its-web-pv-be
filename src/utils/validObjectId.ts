@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { BadRequestError } from "~/responses/error";
+import { BadRequestError } from "../responses/error";
 
 const validObjectId = (IDstring: string = "") => {
   if (!(typeof IDstring === "string" && /^[a-fA-F0-9]{24}$/.test(IDstring))) {

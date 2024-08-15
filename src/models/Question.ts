@@ -1,5 +1,5 @@
 import { Schema, Model, model } from "mongoose";
-import shuffleArray from "~/utils/shuffleArray";
+import shuffleArray from "../utils/shuffleArray";
 
 interface QuestionModel extends Model<IQuestion> {
   List(filter: {

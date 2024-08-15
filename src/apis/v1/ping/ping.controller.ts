@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { AuthenticatedRequest } from "~/types/Request";
+import { AuthenticatedRequest } from "../../../types/Request";
 
 class PingController {
   static ping = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {

@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import { ENVIRONMENT, RD_PASSWORD, RD_HOST, RD_PORT } from "~/configs/config";
+import { ENVIRONMENT, RD_HOST, RD_PASSWORD, RD_PORT } from "../configs/config";
 
 let client = createClient({
   socket: {

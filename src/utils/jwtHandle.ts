@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "~/configs/config";
-import { ForbiddenError } from "~/responses/error";
+import { JWT_SECRET } from "../configs/config";
+import { ForbiddenError } from "../responses/error";
 const { sign, verify } = jwt;
 
 class jwtHandler {

@@ -7,11 +7,11 @@ import methodOverride from "method-override";
 import { rateLimit } from "express-rate-limit";
 import router from "../route";
 import { API_VERSION } from "./config";
-import notFoundHandle from "~/middlewares/notFoundHandle";
-import errorHandle from "~/middlewares/errorHandle";
 import { rateLimitOptions } from "./limit";
 import corsConfiguration from "./cors";
 import requestLogger from "./requestLogger";
+import notFoundHandle from "../middlewares/notFoundHandle";
+import errorHandle from "../middlewares/errorHandle";
 
 const app = express();
 

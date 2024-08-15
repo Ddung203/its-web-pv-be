@@ -1,10 +1,10 @@
 import { NextFunction, Response, Request } from "express";
 import { verify } from "jsonwebtoken";
-import { JWT_SECRET, API_KEY } from "~/configs/config";
-import HttpStatusCode from "~/enums/HttpStatusCode";
-import { AuthFailureError } from "~/responses/error";
-import User from "~/models/User";
-import { AuthenticatedRequest } from "~/types/Request";
+import { AuthenticatedRequest } from "../types/Request";
+import { AuthFailureError } from "../responses/error";
+import HttpStatusCode from "../enums/HttpStatusCode";
+import { API_KEY, JWT_SECRET } from "../configs/config";
+import User from "../models/User";
 
 const authentication = (array: string[]) => {
   return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {

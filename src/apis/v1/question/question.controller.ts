@@ -1,10 +1,10 @@
+import mongoose from "mongoose";
 import { NextFunction, Request, Response } from "express";
 import HttpStatusCode from "../../../enums/HttpStatusCode";
-import { BadRequestError } from "~/responses/error";
-import Question from "~/models/Question";
-import mongoose from "mongoose";
-import { AuthenticatedRequest } from "~/types/Request";
-import RedisService from "~/services/redis.service";
+import { AuthenticatedRequest } from "../../../types/Request";
+import Question from "../../../models/Question";
+import RedisService from "../../../services/redis.service";
+import { BadRequestError } from "../../../responses/error";
 
 class QuestionController {
   static listQuestions = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {

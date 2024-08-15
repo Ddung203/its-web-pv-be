@@ -1,10 +1,10 @@
 // disconnect.ts
 
-import CONST from "~/constants";
-import NAMESPACE from "~/enums/Namespaces";
 import { Document, Types } from "mongoose";
-import User from "~/models/User";
-import { CDTGlobal } from "~/types/global";
+import { CDTGlobal } from "../types/global";
+import NAMESPACE from "../enums/Namespaces";
+import CONST from "../constants";
+import User from "../models/User";
 
 declare const global: CDTGlobal;
 

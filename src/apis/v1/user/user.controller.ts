@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import User from "~/models/User";
-import { AuthenticatedRequest } from "~/types/Request";
 import HttpStatusCode from "./../../../enums/HttpStatusCode";
-import { BadRequestError } from "~/responses/error";
-import { omitData } from "~/utils/pick";
+import User from "../../../models/User";
+import { AuthenticatedRequest } from "../../../types/Request";
+import { BadRequestError } from "../../../responses/error";
+import { omitData } from "../../../utils/pick";
 
 class UserController {
   static listUsers = async (req: Request, res: Response, next: NextFunction) => {

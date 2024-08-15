@@ -6,14 +6,10 @@
     "outDir": "dist",
     "esModuleInterop": true,
     "strict": true,
-    "skipLibCheck": true,
-    "baseUrl": "./",
-    "paths": {
-      "~/*": ["src/*"]
-    }
+    "skipLibCheck": true
   },
   "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    "require": []
   },
   "files": ["src/types/type.d.ts", "src/types/global.d.ts"],
   "include": ["src/**/*"]

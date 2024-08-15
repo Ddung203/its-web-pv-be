@@ -1,10 +1,10 @@
-// question.ts
-import jwtHandler from "~/utils/jwtHandle";
-import CONST from "~/constants";
-import NAMESPACE from "~/enums/Namespaces";
-import validObjectId from "~/utils/validObjectId";
-import Play from "~/models/Play";
+import CONST from "../constants";
+import NAMESPACE from "../enums/Namespaces";
+import Play from "../models/Play";
+import jwtHandler from "../utils/jwtHandle";
+import validObjectId from "../utils/validObjectId";
 
+// question.ts
 type DataType = {
   token: any;
   command: any;

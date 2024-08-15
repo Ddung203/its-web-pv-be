@@ -1,14 +1,14 @@
 import { Response, NextFunction } from "express";
-import { AuthenticatedRequest } from "~/types/Request";
-import { AuthFailureError, BadRequestError } from "~/responses/error";
-import { compareFunction, compareString, hashFunction } from "~/utils/bcryptHandle";
-import { omitData } from "~/utils/pick";
-import User from "~/models/User";
-import jwtHandler from "~/utils/jwtHandle";
-import HttpStatusCode from "~/enums/HttpStatusCode";
-import ReasonPhrase from "~/enums/ReasonPhrase";
-import generateNumber from "~/utils/generateNumber";
-import roles from "~/constants/roles";
+import { omitData } from "../../../utils/pick";
+import HttpStatusCode from "../../../enums/HttpStatusCode";
+import { AuthFailureError, BadRequestError } from "../../../responses/error";
+import roles from "../../../constants/roles";
+import ReasonPhrase from "../../../enums/ReasonPhrase";
+import { compareFunction, compareString, hashFunction } from "../../../utils/bcryptHandle";
+import User from "../../../models/User";
+import { AuthenticatedRequest } from "../../../types/Request";
+import jwtHandler from "../../../utils/jwtHandle";
+import generateNumber from "../../../utils/generateNumber";
 
 class AuthController {
   static loginHandle = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {

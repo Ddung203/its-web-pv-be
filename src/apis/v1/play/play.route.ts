@@ -1,10 +1,10 @@
 import express from "express";
 import { validate } from "express-validation";
-import asyncHandle from "~/utils/asyncHandle";
-import authentication from "~/middlewares/authentication";
 import playValidator from "./play.validation";
 import PlayController from "./play.controller";
-import cacheMiddleware from "~/middlewares/cacheMiddleware";
+import authentication from "../../../middlewares/authentication";
+import asyncHandle from "../../../utils/asyncHandle";
+import cacheMiddleware from "../../../middlewares/cacheMiddleware";
 
 const router = express.Router();
 

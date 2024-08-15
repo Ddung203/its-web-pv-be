@@ -1,4 +1,4 @@
-import LogLevel from "~/enums/LogLevel";
+import LogLevel from "../enums/LogLevel";
 
 const customLevels = {
   levels: {

@@ -1,7 +1,7 @@
 import login from "./login";
 import question from "./question";
 import disconnect from "./disconnect";
-import NAMESPACE from "~/enums/Namespaces";
+import NAMESPACE from "../enums/Namespaces";
 
 // SocketIO.Socket
 export default function (socket: any): void {

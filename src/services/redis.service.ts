@@ -1,5 +1,5 @@
-import client from "~/databases/redis.database";
-import { InternalServerError } from "~/responses/error";
+import client from "../databases/redis.database";
+import { InternalServerError } from "../responses/error";
 
 class RedisService {
   static async set(key: string, data: any, config: any = {}) {

@@ -1,9 +1,9 @@
 import express from "express";
 import { validate } from "express-validation";
 import AuthController from "./auth.controller";
-import asyncHandle from "~/utils/asyncHandle";
 import authValidator from "./auth.validation";
-import authentication from "~/middlewares/authentication";
+import authentication from "../../../middlewares/authentication";
+import asyncHandle from "../../../utils/asyncHandle";
 
 const router = express.Router();
 

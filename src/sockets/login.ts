@@ -1,10 +1,11 @@
 // login.ts
-import CONST from "~/constants";
-import NAMESPACE from "~/enums/Namespaces";
-import User from "~/models/User";
-import { CDTGlobal } from "~/types/global";
-import jwtHandler from "~/utils/jwtHandle";
-import validObjectId from "~/utils/validObjectId";
+
+import CONST from "../constants";
+import NAMESPACE from "../enums/Namespaces";
+import User from "../models/User";
+import { CDTGlobal } from "../types/global";
+import jwtHandler from "../utils/jwtHandle";
+import validObjectId from "../utils/validObjectId";
 
 declare const global: CDTGlobal;
 

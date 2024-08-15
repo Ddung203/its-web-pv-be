@@ -1,19 +1,21 @@
-FROM node
+FROM node:20-alpine
 
 LABEL authors="ddung203"
 
 WORKDIR /app
 
-COPY . .
+COPY yarn.lock ./
 
-# Installing dependencies
+COPY package.json ./
+
 RUN yarn
 
-# Set node environment
+COPY . .
+
+RUN yarn build
+
 ENV NODE_ENV production
 
-# Starting our application
-CMD [ "yarn", "pro" ]
+CMD [ "yarn", "start" ]
 
-# Exposing server port
 EXPOSE 8181

@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
-import client from "~/databases/redis.database";
-import HttpStatusCode from "~/enums/HttpStatusCode";
-import { AuthenticatedRequest } from "~/types/Request";
+import { AuthenticatedRequest } from "../types/Request";
+import client from "../databases/redis.database";
+import HttpStatusCode from "../enums/HttpStatusCode";
 
 const cacheMiddleware = (key: string) => {
   return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {

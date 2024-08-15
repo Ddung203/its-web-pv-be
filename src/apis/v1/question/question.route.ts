@@ -1,10 +1,10 @@
 import express from "express";
 import { validate } from "express-validation";
-import asyncHandle from "~/utils/asyncHandle";
-import authentication from "~/middlewares/authentication";
 import QuestionController from "./question.controller";
 import questionValidator from "./question.validation";
-import cacheMiddleware from "~/middlewares/cacheMiddleware";
+import asyncHandle from "../../../utils/asyncHandle";
+import cacheMiddleware from "../../../middlewares/cacheMiddleware";
+import authentication from "../../../middlewares/authentication";
 
 const router = express.Router();
 

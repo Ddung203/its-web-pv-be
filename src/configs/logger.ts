@@ -1,5 +1,5 @@
 import winston from "winston";
-import customLevels from "~/constants/customLevels";
+import customLevels from "../constants/customLevels";
 
 const nonErrorFilter = winston.format((info) => {
   return info.level === "error" ? false : info;

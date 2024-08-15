@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { TooManyRequestsError } from "~/responses/error";
+import { TooManyRequestsError } from "../responses/error";
 
 export const rateLimitOptions: any = {
   windowMs: 15 * 60 * 1000, // 15 minutes

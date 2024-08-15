@@ -1,5 +1,5 @@
-import HttpStatusCode from "~/enums/HttpStatusCode";
-import ReasonPhrase from "~/enums/ReasonPhrase";
+import HttpStatusCode from "../enums/HttpStatusCode";
+import ReasonPhrase from "../enums/ReasonPhrase";
 
 class ErrorResponse extends Error {
   status: number;

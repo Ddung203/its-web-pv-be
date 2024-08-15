@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import HttpStatusCode from "../../../enums/HttpStatusCode";
-import { BadRequestError, ConflictRequestError, NotFoundError } from "~/responses/error";
-import Play from "~/models/Play";
-import validObjectId from "~/utils/validObjectId";
-import { AuthenticatedRequest } from "~/types/Request";
-import User from "~/models/User";
-import Question from "~/models/Question";
-import RedisService from "~/services/redis.service";
 import { Types } from "mongoose";
+import HttpStatusCode from "../../../enums/HttpStatusCode";
+import Play from "../../../models/Play";
+import validObjectId from "../../../utils/validObjectId";
+import { BadRequestError, ConflictRequestError, NotFoundError } from "../../../responses/error";
+import RedisService from "../../../services/redis.service";
+import User from "../../../models/User";
+import { AuthenticatedRequest } from "../../../types/Request";
+import Question from "../../../models/Question";
 
 interface PopulatedPlay {
   _id: Types.ObjectId;
