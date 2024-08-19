@@ -70,7 +70,7 @@ class UserController {
     try {
       const user = await User.findOne({ studentCode: req.params.studentCode });
 
-      const { studentName, studentClass, studentPhone } = req.body;
+      const { studentName, studentClass, studentPhone, studentHometown, role} = req.body;
 
       if (!user) {
         throw new BadRequestError("User not found!");
@@ -78,7 +78,7 @@ class UserController {
 
       const updatedUser = await User.findByIdAndUpdate(
         user._id,
-        { studentName, studentClass, studentPhone },
+        { studentName, studentClass, studentPhone, studentHometown, role },
         { new: true, runValidators: true },
       );
 
