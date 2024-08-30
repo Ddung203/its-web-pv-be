@@ -12,20 +12,12 @@ interface PlayModel extends Model<IPlay> {
 const playSchema = new Schema<IPlay, PlayModel>(
   {
     userID: { type: Schema.Types.ObjectId, ref: "User", unique: true },
-    questions: [
-      {
-        questionID: { type: Schema.Types.ObjectId, ref: "Question" },
-        answered: Boolean,
-        answer: Number,
-      },
-    ],
     timeOut: { type: Date, default: new Date(Date.now() + 20 * 60000) },
     score: { type: Number, default: 0 },
     totalScore: { type: Number, default: 0 },
     interviewScore: { type: Number, default: 0 },
     interviewer: { type: String },
     comment: { type: String },
-    isInterviewed: { type: Boolean, default: false },
   },
   { collection: "plays", timestamps: true },
 );
@@ -35,17 +27,14 @@ playSchema.statics.List = async function ({ skip = 0, limit = 500, sort = { crea
     .populate({
       path: "userID",
       select: "studentCode studentName studentClass studentHometown",
-      populate: [{ path: "_id", select: "content" }],
-    })
-    .populate({
-      path: "questions.questionID",
-      select: "-correctAnswer",
     })
     .sort(sort)
     .skip(+skip)
     .limit(+limit)
+    .select("-__v")
     .exec();
   const count = await this.find(filter).countDocuments();
+
   return { data, count, limit, skip };
 };
 

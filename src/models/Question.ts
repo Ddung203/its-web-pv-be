@@ -9,7 +9,7 @@ interface QuestionModel extends Model<IQuestion> {
     sort: object;
   }): Promise<{ data: IQuestion[]; count: number; limit: number; skip: number }>;
 
-  Random(numQuestions?: number): Promise<Array<{ questionId: string; answer: boolean }>>;
+  Random(numQuestions?: number): Promise<Array<IQuestion>>;
 }
 
 const questionSchema = new Schema<IQuestion, QuestionModel>(
@@ -44,28 +44,32 @@ questionSchema.statics.List = async function ({
   return { data, count, limit, skip };
 };
 
-questionSchema.statics.Random = async function (
-  numQuestions = 20,
-): Promise<Array<{ questionId: string; answer: boolean }>> {
+questionSchema.statics.Random = async function (numQuestions = 20): Promise<Array<IQuestion>> {
   const levels = ["easy", "normal", "medium", "hard"];
   const questionsPerLevel = Math.ceil(numQuestions / levels.length);
+  const returnQuestions: Array<IQuestion> = [];
 
-  const returnQuestions: Array<{ questionId: string; answer: boolean }> = [];
+  // Helper function to fetch and shuffle questions
+  const fetchAndShuffleQuestions = async (level: string) => {
+    let questions = await this.find({ level }).select("-__v -createdAt -updatedAt ").lean();
 
-  for (const level of levels) {
-    const questions = await this.find({ level }).exec();
-    const shuffledQuestions = shuffleArray(questions); // Sử dụng shuffleArray
-    const selectedQuestions = shuffledQuestions.slice(0, questionsPerLevel);
-    selectedQuestions.forEach((item) => returnQuestions.push({ questionId: item._id.toString(), answer: false }));
-  }
+    questions = questions.map((question) => ({
+      ...question,
+      userAnswer: 0,
+    }));
 
-  // Đảm bảo đủ số lượng câu hỏi yêu cầu
-  if (returnQuestions.length < numQuestions) {
+    return shuffleArray(questions);
+  };
+
+  // Ensure enough questions are returned
+  while (returnQuestions.length < numQuestions) {
     for (const level of levels) {
-      const questions = await this.find({ level }).exec();
-      const shuffledQuestions = shuffleArray(questions);
+      const shuffledQuestions = await fetchAndShuffleQuestions(level);
       const selectedQuestions = shuffledQuestions.slice(0, questionsPerLevel);
-      selectedQuestions.forEach((item) => returnQuestions.push({ questionId: item._id.toString(), answer: false }));
+
+      returnQuestions.push(...selectedQuestions);
+
+      if (returnQuestions.length >= numQuestions) break;
     }
   }
 

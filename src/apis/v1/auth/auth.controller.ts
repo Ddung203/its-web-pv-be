@@ -24,10 +24,6 @@ class AuthController {
         throw new AuthFailureError("Invalid student code or password!");
       }
 
-      if (user.isOnline) {
-        throw new AuthFailureError("User is already logged in!");
-      }
-
       const { refreshToken, accessToken } = await jwtHandler.createTokenPair({
         user: omitData({ fields: ["password", "createdAt", "updatedAt", "__v"], object: user.toObject() }),
       });

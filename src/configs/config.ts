@@ -31,7 +31,7 @@ const environmentConfig: Record<Environment, Partial<IConfig>> = {
     ENVIRONMENT: currentEnvironment,
     PORT: process.env.PORT || 8181,
     API_VERSION: "/api/v1",
-    MONGO_URI: "mongodb://localhost:27017/myapp",
+    MONGO_URI: "mongodb://localhost:27017/test",
     JWT_SECRET: "ES2USMdGFxZ3MuLNQrb9",
     ALLOWED_IP: "*",
     API_KEY: "e3090eddbe7dd2907912b221b2513be4",

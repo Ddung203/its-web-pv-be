@@ -1,6 +1,5 @@
 import { Schema, Model, model } from "mongoose";
 
-// type UserModel = Model<IUser>;
 interface UserModel extends Model<IUser> {
   List(filter: {
     limit: number;
@@ -20,8 +19,8 @@ const userSchema = new Schema<IUser, UserModel>(
     password: { type: String, required: true },
     image: { type: String },
     role: { type: String, enum: ["user", "admin", "interviewer", "guest"], default: "user" },
-    isOnline: { type: Boolean, default: false },
-    status: { type: Number, default: 0 },
+    isTested: { type: Number, enum: [0, 1], default: 0 },
+    isInterviewed: { type: Number, enum: [0, 1], default: 0 },
   },
   { collection: "users", timestamps: true },
 );

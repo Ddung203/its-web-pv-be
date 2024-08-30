@@ -7,8 +7,8 @@ interface IUser {
   password: string;
   image?: string;
   role: "user" | "admin" | "interviewer" | "guest";
-  isOnline?: boolean;
-  status?: number;
+  isTested?: number;
+  isInterviewed?: number;
 }
 
 interface IQuestion {
@@ -27,18 +27,10 @@ interface IQuestion {
 
 interface IPlay {
   userID: any;
-  questions: [
-    {
-      questionID: any;
-      answered: boolean;
-      answer: number;
-    },
-  ];
   timeOut: Date;
-  totalScore: number;
   score: number;
   interviewScore: number;
+  totalScore: number;
   interviewer: string;
   comment: string;
-  isInterviewed: boolean;
 }
