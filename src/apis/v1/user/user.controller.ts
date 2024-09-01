@@ -9,14 +9,14 @@ class UserController {
   static listUsers = async (req: Request, res: Response, next: NextFunction) => {
     const limit = parseInt(req.query.limit as string, 10) || 50;
     const skip = parseInt(req.query.skip as string, 10) || 0;
-    const filter = req.query.filter ? JSON.parse(req.query.filter as string) : {};
+    const filter = req.query.filter ? JSON.parse(decodeURIComponent(req.query.filter as string)) : {};
     const sort = req.query.sort ? JSON.parse(req.query.sort as string) : { createdAt: -1 };
 
     try {
       const users = await User.List({ limit, skip, filter, sort });
       return res.status(200).json({
         success: true,
-        payload: { users },
+        payload: { users: users.data, count: users.count, limit: users.limit, skip: users.skip },
         message: "Get list of users!",
       });
     } catch (error) {
@@ -70,7 +70,7 @@ class UserController {
     try {
       const user = await User.findOne({ studentCode: req.params.studentCode });
 
-      const { studentName, studentClass, studentPhone, studentHometown, role} = req.body;
+      const { studentName, studentClass, studentPhone, studentHometown, role } = req.body;
 
       if (!user) {
         throw new BadRequestError("User not found!");

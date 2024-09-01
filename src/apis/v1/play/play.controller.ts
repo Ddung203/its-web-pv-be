@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { Types } from "mongoose";
 import HttpStatusCode from "../../../enums/HttpStatusCode";
 import Play from "../../../models/Play";
 import validObjectId from "../../../utils/validObjectId";
@@ -8,7 +7,6 @@ import RedisService from "../../../services/redis.service";
 import User from "../../../models/User";
 import { AuthenticatedRequest } from "../../../types/Request";
 import Question from "../../../models/Question";
-import { omitData } from "../../../utils/pick";
 
 class PlayController {
   static listPlays = async (req: Request, res: Response, next: NextFunction) => {
@@ -23,28 +21,6 @@ class PlayController {
         success: true,
         payload: { plays },
         message: "Get list of plays!",
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  // TODO: Change to user api method
-  static getListPlayByInterviewed = async (req: Request, res: Response, next: NextFunction) => {
-    const interviewed = req.query.interviewed || false;
-
-    try {
-      // ! Warning
-      const plays = await Play.find({ isInterviewed: interviewed }).populate({
-        path: "userID",
-        select: "studentCode studentName studentClass studentHometown",
-        populate: [{ path: "_id", select: "content" }],
-      });
-
-      return res.status(200).json({
-        success: true,
-        payload: { plays },
-        message: `isInterviewed: ${interviewed}`,
       });
     } catch (error) {
       next(error);
@@ -209,7 +185,6 @@ class PlayController {
         },
         message: "Interview completed successfully!",
       });
-      // TODO: api lay user chua phong van nhung da hoan thanh test
     } catch (error) {
       next(error);
     }

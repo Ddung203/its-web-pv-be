@@ -3,9 +3,11 @@ interface IUser {
   studentName: string;
   studentClass: string;
   studentPhone: string;
-  studentHometown: string;
-  password: string;
+  studentHometown?: string;
+  studentEmail?: string;
+  studentFacebook?: string;
   image?: string;
+  password: string;
   role: "user" | "admin" | "interviewer" | "guest";
   isTested?: number;
   isInterviewed?: number;

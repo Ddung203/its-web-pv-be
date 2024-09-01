@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidationError } from "express-validation";
 import logger from "../configs/logger";
-import { format } from "path";
+import format from "../utils/formatValidationError";
 
 const errorHandle = (error: any, req: Request, res: Response, next: NextFunction) => {
   // Log thông tin chi tiết về lỗi

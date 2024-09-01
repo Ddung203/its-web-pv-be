@@ -17,11 +17,6 @@ router.post(
   asyncHandle(AuthController.signUpHandle),
 );
 
-router.post(
-  "/reset-password",
-  authentication(["admin"]),
-  validate(authValidator.reset),
-  asyncHandle(AuthController.resetPasswordHandle),
-);
+router.post("/pre-signup", validate(authValidator.signUp), asyncHandle(AuthController.signUpHandle));
 
 export { router as authRouter };

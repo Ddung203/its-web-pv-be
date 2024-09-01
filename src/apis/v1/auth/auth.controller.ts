@@ -43,16 +43,25 @@ class AuthController {
     }
   };
 
-  //signUpHandle
   static signUpHandle = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
-      const { studentCode, studentName, studentClass, studentHometown, studentPhone, role } = req.body;
+      const {
+        studentCode,
+        studentName,
+        studentClass,
+        studentPhone,
+        studentHometown,
+        studentEmail,
+        studentFacebook,
+        image,
+        role,
+      } = req.body;
       const duplicate = await User.findOne({ studentCode });
 
       if (duplicate) {
         return res.status(HttpStatusCode.CONFLICT).json({
           success: false,
-          payload: { studentCode, studentName, studentClass, studentHometown, studentPhone, role },
+          payload: { studentCode, studentName, studentClass, studentHometown, studentEmail, studentPhone, role },
           error: { reason: ReasonPhrase.CONFLICT },
           message: "Student already exists!",
         });
@@ -66,13 +75,16 @@ class AuthController {
       let password = role === "admin" ? await hashFunction("admin") : generateNumber().toString();
 
       let user = new User({
-        studentCode,
-        studentName,
-        studentClass,
-        studentHometown,
-        studentPhone,
-        password,
-        role,
+        studentCode: studentCode.toString().trim(),
+        studentName: studentName.toString().trim(),
+        studentClass: studentClass.toString().trim(),
+        studentHometown: studentHometown.toString().trim(),
+        studentPhone: studentPhone.toString().trim(),
+        studentEmail: studentEmail.toString().trim(),
+        password: password.toString().trim(),
+        studentFacebook: studentFacebook.toString().trim(),
+        image: image.toString().trim(),
+        role: role.toString().trim(),
       });
 
       user = await user.save();
@@ -83,39 +95,6 @@ class AuthController {
         payload: { ...newUser?.toObject(), password },
         error: null,
         message: "User registered successfully!",
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  // resetPasswordHandle
-  static resetPasswordHandle = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const { studentCode, password } = req.body;
-    try {
-      const user = await User.findOne({ studentCode });
-
-      if (!user) throw new AuthFailureError("Invalid student code or password!");
-
-      const hashedPassword = await hashFunction(password);
-
-      const updatedUser = await User.findByIdAndUpdate(
-        user._id,
-        { password: hashedPassword },
-        { new: true, runValidators: true },
-      );
-
-      if (!updatedUser) {
-        throw new BadRequestError("Failed to update password!");
-      }
-
-      return res.status(HttpStatusCode.OK).json({
-        success: true,
-        payload: {
-          user: omitData({ fields: ["password"], object: updatedUser }),
-        },
-        error: null,
-        message: "Password updated successfully!",
       });
     } catch (error) {
       next(error);

@@ -16,6 +16,8 @@ const userSchema = new Schema<IUser, UserModel>(
     studentClass: { type: String, required: true },
     studentPhone: { type: String, required: true },
     studentHometown: { type: String, required: false, default: "No information" },
+    studentFacebook: { type: String, required: false, default: "No information" },
+    studentEmail: { type: String, required: false, default: "No information" },
     password: { type: String, required: true },
     image: { type: String },
     role: { type: String, enum: ["user", "admin", "interviewer", "guest"], default: "user" },
@@ -25,17 +27,8 @@ const userSchema = new Schema<IUser, UserModel>(
   { collection: "users", timestamps: true },
 );
 
-/**
-  // Giới hạn số lượng người dùng trả về là 10, bỏ qua 5 người dùng đầu tiên, lọc theo lớp học 'CS101', sắp xếp theo tên sinh viên
-  const limit = 10;
-  const skip = 5;
-  const filter = JSON.stringify({ studentClass: 'CS101' });
-  const sort = JSON.stringify({ studentName: 1 }); // 1 là tăng dần, -1 là giảm dần
-
-  const url = `/api/users?limit=${limit}&skip=${skip}&filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}`;
-*/
 userSchema.statics.List = async function ({ skip = 0, limit = 500, sort = { createdAt: -1 }, filter = {} }) {
-  const data = await this.find(filter, { createdAt: 0, updatedAt: 0, password: 0, __v: 0 })
+  const data = await this.find(filter, { createdAt: 0, updatedAt: 0, __v: 0 })
     .sort(sort)
     .skip(+skip)
     .limit(+limit)
