@@ -24,25 +24,28 @@ class UserController {
     }
   };
 
-  static getListUsersByRole = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const role = req.query.role || "guest";
-
+  static findResult = async (req: Request, res: Response, next: NextFunction) => {
+    const { studentCode, isPassed } = req.query;
     try {
-      let filter = "studentCode studentName studentClass studentHometown studentPhone status role";
-
-      if (req.auth.role === "admin") {
-        filter = `${filter} password`;
+      if (!studentCode || !isPassed) {
+        return next(new BadRequestError("Query is missing!"));
       }
 
-      const users = await User.find({ role }, filter);
+      const user = await User.findOne({ studentCode, isPassed });
+
+      if (!user) {
+        return next(new BadRequestError("User not found!"));
+      }
+
+      const userData = omitData({ fields: ["password"], object: user.toObject() });
 
       return res.status(200).json({
         success: true,
-        payload: { users },
-        message: `Get list of ${role} users!`,
+        payload: { user: userData },
+        message: "Received user information successfully!",
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 

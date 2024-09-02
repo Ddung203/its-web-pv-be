@@ -75,16 +75,16 @@ class AuthController {
       let password = role === "admin" ? await hashFunction("admin") : generateNumber().toString();
 
       let user = new User({
-        studentCode: studentCode.toString().trim(),
-        studentName: studentName.toString().trim(),
-        studentClass: studentClass.toString().trim(),
-        studentHometown: studentHometown.toString().trim(),
-        studentPhone: studentPhone.toString().trim(),
-        studentEmail: studentEmail.toString().trim(),
-        password: password.toString().trim(),
-        studentFacebook: studentFacebook.toString().trim(),
-        image: image.toString().trim(),
-        role: role.toString().trim(),
+        studentCode: studentCode?.toString().trim(),
+        studentName: studentName?.toString().trim(),
+        studentClass: studentClass?.toString().trim(),
+        studentHometown: studentHometown?.toString().trim(),
+        studentPhone: studentPhone?.toString().trim(),
+        studentEmail: studentEmail?.toString().trim(),
+        password: password?.toString().trim(),
+        studentFacebook: studentFacebook?.toString().trim(),
+        image: image?.toString().trim(),
+        role: role?.toString().trim(),
       });
 
       user = await user.save();

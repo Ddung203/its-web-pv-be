@@ -11,6 +11,7 @@ interface IUser {
   role: "user" | "admin" | "interviewer" | "guest";
   isTested?: number;
   isInterviewed?: number;
+  isPassed?: number;
 }
 
 interface IQuestion {

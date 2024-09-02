@@ -23,6 +23,7 @@ const userSchema = new Schema<IUser, UserModel>(
     role: { type: String, enum: ["user", "admin", "interviewer", "guest"], default: "user" },
     isTested: { type: Number, enum: [0, 1], default: 0 },
     isInterviewed: { type: Number, enum: [0, 1], default: 0 },
+    isPassed: { type: Number, enum: [0, 1], default: 0 },
   },
   { collection: "users", timestamps: true },
 );
