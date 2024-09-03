@@ -20,7 +20,7 @@ class QuestionController {
         "questions",
         { questions },
         {
-          EX: 3600,
+          EX: 60,
         },
       );
 

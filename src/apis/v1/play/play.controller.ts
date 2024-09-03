@@ -164,9 +164,11 @@ class PlayController {
 
   static interview = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const { interviewScore, comment, interviewer } = req.body;
+    const { userID } = req.params;
 
     try {
-      const play = await Play.findById(validObjectId(req.params.playID));
+      const play = await Play.findOne({ userID: validObjectId(userID) });
+
       if (!play) throw new BadRequestError("Play session not found!");
 
       play.interviewScore = interviewScore;

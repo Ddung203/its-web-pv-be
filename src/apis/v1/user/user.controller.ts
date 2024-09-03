@@ -4,6 +4,7 @@ import User from "../../../models/User";
 import { AuthenticatedRequest } from "../../../types/Request";
 import { BadRequestError } from "../../../responses/error";
 import { omitData } from "../../../utils/pick";
+import Play from "../../../models/Play";
 
 class UserController {
   static listUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -58,15 +59,24 @@ class UserController {
   };
 
   static getUser = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const user = await User.findOne({ studentCode: req.params.studentCode });
+    try {
+      const user = await User.findOne({ studentCode: req.params.studentCode });
 
-    if (!user) throw new BadRequestError("User not found!");
+      if (!user) throw new BadRequestError("User not found!");
 
-    return res.status(200).json({
-      success: true,
-      payload: { user: omitData({ fields: ["password"], object: user.toObject() }) },
-      message: "Received user information successfully!",
-    });
+      const playData = await Play.findOne({ userID: user._id }).select("-__v").exec();
+
+      return res.status(200).json({
+        success: true,
+        payload: {
+          user: omitData({ fields: ["password"], object: user.toObject() }),
+          play: playData || null,
+        },
+        message: "Received user and play information successfully!",
+      });
+    } catch (error) {
+      next(error);
+    }
   };
 
   static updateUser = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {

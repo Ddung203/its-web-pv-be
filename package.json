@@ -1,10 +1,10 @@
 {
-  "name": "be",
+  "name": "its-web-pv-be",
   "version": "1.0.0",
   "description": "",
   "author": "https://github.com/Ddung203",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Ddung203/its-web-pv-be"
