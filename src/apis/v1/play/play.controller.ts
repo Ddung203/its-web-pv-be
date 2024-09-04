@@ -141,7 +141,7 @@ class PlayController {
       let score = 0;
 
       answerArray.forEach((currentItem: any) => {
-        if (currentItem.userAnswer === currentItem.correctAnswer) score += 10;
+        if (currentItem.userAnswer === currentItem.correctAnswer) score += 5;
       });
 
       play.timeOut = new Date(Date.now());
