@@ -18,6 +18,8 @@ services:
       - RD_PASSWORD=$RD_PASSWORD
       - RD_HOST=$RD_HOST
       - RD_PORT=$RD_PORT
+      - EMAIL_AUTH_USER=$EMAIL_AUTH_USER
+      - EMAIL_AUTH_PASS=$EMAIL_AUTH_PASS
     ports:
       - "8181:8181"
     volumes:
