@@ -83,21 +83,17 @@ class UserController {
     try {
       const user = await User.findOne({ studentCode: req.params.studentCode });
 
-      const { studentName, studentClass, studentPhone, studentHometown, role } = req.body;
-
       if (!user) {
         throw new BadRequestError("User not found!");
       }
 
-      const updatedUser = await User.findByIdAndUpdate(
-        user._id,
-        { studentName, studentClass, studentPhone, studentHometown, role },
-        { new: true, runValidators: true },
-      );
+      Object.entries(req.body).forEach(([key, value]) => {
+        if (value !== undefined && key in user) {
+          (user as any)[key] = value;
+        }
+      });
 
-      if (!updatedUser) {
-        throw new BadRequestError("Failed to update user information!");
-      }
+      const updatedUser = await user.save();
 
       return res.status(200).json({
         success: true,

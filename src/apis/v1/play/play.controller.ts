@@ -163,7 +163,7 @@ class PlayController {
   };
 
   static interview = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const { interviewScore, comment, interviewer } = req.body;
+    const { interviewScore, comment, interviewer, endTime } = req.body;
     const { userID } = req.params;
 
     try {
@@ -174,6 +174,7 @@ class PlayController {
       play.interviewScore = interviewScore;
       play.comment = comment;
       play.interviewer = interviewer;
+      play.endTime = endTime;
 
       const result = await play.save();
       await User.findOneAndUpdate({ _id: play.userID }, { isInterviewed: 1 });

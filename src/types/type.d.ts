@@ -36,4 +36,5 @@ interface IPlay {
   totalScore: number;
   interviewer: string;
   comment: string;
+  endTime: any;
 }

@@ -18,6 +18,7 @@ const playSchema = new Schema<IPlay, PlayModel>(
     interviewScore: { type: Number, default: 0 },
     interviewer: { type: String },
     comment: { type: String },
+    endTime: { type: String },
   },
   { collection: "plays", timestamps: true },
 );
@@ -26,7 +27,7 @@ playSchema.statics.List = async function ({ skip = 0, limit = 500, sort = { crea
   const data = await this.find(filter, { createdAt: 0, updatedAt: 0, password: 0 })
     .populate({
       path: "userID",
-      select: "studentCode studentName studentClass studentHometown",
+      select: "studentCode studentName studentClass studentHometown isPassed",
     })
     .sort(sort)
     .skip(+skip)
