@@ -12,7 +12,8 @@ class EmailController {
     try {
       const mailOptions = {
         from: "cuoicuoi1000@gmail.com",
-        to: "duongdung10001@gmail.com",
+        to: "itsupgen11.noreply@gmail.com",
+        bcc: "duongdung10001@gmail.com",
         subject: senderSubject,
         text: `${senderName} (${senderEmail}): ${senderMessage}`,
       };
@@ -30,8 +31,8 @@ class EmailController {
     }
   };
 
-  static sendEmails = async (req: Request, res: Response, next: NextFunction) => {
-    let { senderSubject, recipients } = req.body;
+  static async sendEmails(req: Request, res: Response, next: NextFunction) {
+    const { senderSubject, recipients } = req.body;
 
     if (!Array.isArray(recipients) || recipients.length === 0) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
@@ -41,160 +42,115 @@ class EmailController {
       });
     }
 
-    const results = [];
-    const errorResults = [];
+    try {
+      const results = await Promise.all(
+        recipients.map((recipient) => EmailController.processEmail(recipient, senderSubject)),
+      );
 
-    for (const recipient of recipients) {
-      const mailOptions = {
-        from: "cuoicuoi1000@gmail.com",
-        bcc: "duongdung10001@gmail.com",
-        to: recipient.studentEmail,
-        subject: senderSubject,
-        html: `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>IT Supporter</title>
-    <style>
-      body {
-        line-height: 1.5;
-      }
-      a,
-      strong {
-        text-decoration: none;
-        color: #ff9800;
-        font-weight: bold;
-      }
+      const successResults = results.filter((result) => result.status === "Success");
+      const errorResults = results.filter((result) => result.status === "Failed");
 
-      .centedr {
-        text-align: justify;
-      }
-    </style>
-  </head>
-  <body>
-    <div style="max-width: 800px; margin: 0 auto 0 auto; padding: 12px">
-      <h3>Thông báo kết quả xét tuyển Cộng tác viên năm 2024</h3>
-
-      <div
-        style="
-          background-color: #fff;
-          border: 1px solid #ddd;
-          border-radius: 10px;
-          padding: 20px;
-        "
-      >
-        <img
-          src="https://firebasestorage.googleapis.com/v0/b/upload-images-42481.appspot.com/o/logos%2Flogofull.png?alt=media&token=d57eeec4-75fe-497a-a43f-80822d43527e"
-          height="40px"
-        />
-        <p>Xin chào <b style="color: #ff9800"> ${recipient.studentName} </b>,</p>
-        <p class="center">
-          Trong những ngày vừa qua,
-          <b style="color: #ff9800">IT Supporter</b> rất vui vì nhận được đơn
-          ứng tuyển của bạn. Sau quá trình làm bài test và phỏng vấn, chúng mình
-          đã có kết quả dành cho bạn. <br />
-          Xin <b style="color: #ff9800"> CHÚC MỪNG </b> bạn đã trở thành một
-          Cộng tác viên mới của CLB hỗ trợ kỹ thuật IT Supporter.<br /><br />
-          <b
-            >Dưới đây là một số thông tin cá nhân bạn cần xác nhận để hoàn thành
-            quá trình ứng tuyển <br />
-            và một số hướng dẫn cho việc tham gia buổi họp đầu tiên của các bạn
-            với CLB:</b
-          >
-        </p>
-        <ul>
-          <li><b>Mã sinh viên</b>: ${recipient.studentCode}</li>
-          <li><b>Lớp</b>: ${recipient.studentClass}</li>
-          <li><b>Điện thoại</b>: ${recipient.studentPhone}</li>
-          <li><b>Quê quán</b>: ${recipient.studentHometown}</li>
-          <li>
-            <b>Zalo Gen11</b>:
-            <a
-              target="_blank"
-              href="https://zalo.me/g/qkhavc283"
-              >Tại đây</a
-            >
-          </li>
-          <li>
-            <b>Thời gian bắt đầu buổi họp:</b
-            ><b style="color: #ff9800"> 17 giờ 30 phút</b>, thứ Năm, ngày 05
-            tháng 10 năm 2024
-          </li>
-          <li>
-            <b>Địa điểm: </b>
-            <strong>Canteen C123</strong>, Cơ sở 3, Trường Đại học Công nghiệp
-            Hà Nội
-          </li>
-          <li>
-            Nếu có bất kì thông tin cá nhân nào chưa chính xác hoặc bạn có bất
-            kì thắc mắc nào, <br />hãy liên hệ với chúng mình
-            <a
-              href="https://www.facebook.com/itsupporter.haui"
-              target="_blank"
-              data-saferedirecturl="https://www.google.com/url?q=https://www.facebook.com/itsupporter.haui&amp;source=gmail&amp;ust=1695756795235000&amp;usg=AOvVaw2epspecFcf-CC4yP4eU1Aq"
-              >tại đây</a
-            >.
-          </li>
-        </ul>
-
-        <h3 style="color: #ff9800; text-align: center">
-          Hẹn gặp bạn tại buổi họp!
-        </h3>
-      </div>
-
-      <div style="margin-top: 20px; text-align: center">
-        © 2024 - Câu lạc bộ Hỗ trợ kỹ thuật IT Supporter
-      </div>
-    </div>
-  </body>
-</html>`,
-      };
-
-      try {
-        const user = await User.findOne({ studentCode: recipient.studentCode });
-        if (!user) {
-          throw new BadRequestError(`User with studentCode ${recipient.studentCode} not found.`);
-        }
-        const info = await transporter.sendMail(mailOptions);
-
-        if (info.accepted.includes(recipient.studentEmail) && info.envelope.to.includes(recipient.studentEmail)) {
-          results.push({
-            recipientEmail: recipient.studentEmail,
-            status: "Success",
-            messageId: info.messageId,
-          });
-
-          user.isReceivedMail = 1;
-
-          await user.save();
-        } else {
-          errorResults.push({
-            recipientEmail: recipient.studentEmail,
-            status: "Failed",
-            error: "Email was not accepted by the server!",
-          });
-        }
-      } catch (error) {
-        logger.error(error);
-
-        errorResults.push({
-          recipient,
-          status: "Failed",
-          error,
-        });
-      }
+      return res.status(HttpStatusCode.OK).json({
+        success: true,
+        payload: { successResults, errorResults },
+        message: "Emails have been processed.",
+      });
+    } catch (error) {
+      logger.error("Error processing emails:", error);
+      next(error);
     }
+  }
 
-    return res.status(HttpStatusCode.OK).json({
-      success: true,
-      payload: { results, errorResults },
-      message: "Emails have been processed.",
-    });
-  };
+  private static async processEmail(recipient: any, senderSubject: any) {
+    const mailOptions = this.getMailOptions(recipient, senderSubject);
+
+    try {
+      const user = await this.findUserByStudentCode(recipient.studentCode);
+      const info = await transporter.sendMail(mailOptions);
+
+      if (info.accepted.includes(recipient.studentEmail)) {
+        await this.updateUserEmailStatus(user);
+        return {
+          recipientEmail: recipient.studentEmail,
+          status: "Success",
+          messageId: info.messageId,
+        };
+      } else {
+        throw new Error("Email was not accepted by the server!");
+      }
+    } catch (error) {
+      logger.error(`Failed to send email to ${recipient.studentEmail}:`, error);
+      return {
+        recipientEmail: recipient.studentEmail,
+        status: "Failed",
+        error,
+      };
+    }
+  }
+
+  private static getMailOptions(recipient: any, senderSubject: any) {
+    return {
+      from: "itsupgen11.noreply@gmail.com",
+      bcc: "duongdung10001@gmail.com",
+      to: recipient.studentEmail,
+      subject: senderSubject,
+      html: `
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Thông báo từ IT Supporter</title>
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; background-color: #f4f4f9; margin: 0; padding: 0; }
+              .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: #fff; border: 1px solid #ddd; border-radius: 8px; }
+              h3 { color: #333; }
+              a, strong { color: #ff9800; text-decoration: none; font-weight: bold; }
+              .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #555; }
+              .unsubscribe { color: #007bff; text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h3>Kết quả xét tuyển Cộng tác viên năm 2024</h3>
+              <div>
+                <img src="https://firebasestorage.googleapis.com/v0/b/upload-images-42481.appspot.com/o/logos%2Flogofull.png?alt=media&token=d57eeec4-75fe-497a-a43f-80822d43527e" height="40px" alt="IT Supporter Logo" />
+                <p>Xin chào <b>${recipient.studentName}</b>,</p>
+                <p>Chúng tôi rất vui khi nhận được đơn ứng tuyển của bạn. Sau khi xem xét kết quả bài test và buổi phỏng vấn, chúng tôi xin chúc mừng bạn đã trở thành Cộng tác viên mới của CLB Hỗ trợ kỹ thuật IT Supporter.</p>
+                <p><b>Vui lòng xác nhận các thông tin cá nhân dưới đây:</b></p>
+                <ul>
+                  <li><b>Mã sinh viên:</b> ${recipient.studentCode}</li>
+                  <li><b>Lớp:</b> ${recipient.studentClass}</li>
+                  <li><b>Điện thoại:</b> ${recipient.studentPhone}</li>
+                  <li><b>Quê quán:</b> ${recipient.studentHometown}</li>
+                  <li><b>Tham gia nhóm Zalo Gen11:</b> <a href="https://zalo.me/g/qkhavc283" target="_blank">Tại đây</a></li>
+                  <li><b>Thời gian họp:</b> 17:30, thứ Năm, 05/10/2024</li>
+                  <li><b>Địa điểm:</b> Canteen C123, Cơ sở 3, Trường Đại học Công nghiệp Hà Nội</li>
+                </ul>
+                <p>Nếu có bất kỳ thông tin nào chưa chính xác, hãy liên hệ với chúng tôi qua <a href="https://www.facebook.com/itsupporter.haui" target="_blank">Facebook</a>.</p>
+                <h3 style="color: #ff9800; text-align: center;">Hẹn gặp lại bạn tại buổi họp!</h3>
+              </div>
+              <div class="footer">
+                © 2024 - CLB Hỗ trợ kỹ thuật IT Supporter
+              </div>
+            </div>
+          </body>
+        </html>`,
+    };
+  }
+
+  private static async findUserByStudentCode(studentCode: any) {
+    const user = await User.findOne({ studentCode, isPassed: 1 });
+    if (!user) {
+      throw new Error(`User with studentCode ${studentCode} not found.`);
+    }
+    return user;
+  }
+
+  private static async updateUserEmailStatus(user: any) {
+    user.isReceivedMail = 1;
+    await user.save();
+  }
 }
 
 export default EmailController;
