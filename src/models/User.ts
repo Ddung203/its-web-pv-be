@@ -24,6 +24,7 @@ const userSchema = new Schema<IUser, UserModel>(
     isTested: { type: Number, enum: [0, 1], default: 0 },
     isInterviewed: { type: Number, enum: [0, 1], default: 0 },
     isPassed: { type: Number, enum: [0, 1], default: 0 },
+    isReceivedMail: { type: Number, enum: [0, 1], default: 0 },
   },
   { collection: "users", timestamps: true },
 );

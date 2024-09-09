@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import HttpStatusCode from "../../../enums/HttpStatusCode";
 import transporter from "../../../configs/nodemailer";
+import User from "../../../models/User";
+import { BadRequestError } from "../../../responses/error";
+import logger from "../../../configs/logger";
 
 class EmailController {
   static sendFeedback = async (req: Request, res: Response, next: NextFunction) => {
@@ -152,6 +155,10 @@ class EmailController {
       };
 
       try {
+        const user = await User.findOne({ studentCode: recipient.studentCode });
+        if (!user) {
+          throw new BadRequestError(`User with studentCode ${recipient.studentCode} not found.`);
+        }
         const info = await transporter.sendMail(mailOptions);
 
         if (info.accepted.includes(recipient.studentEmail) && info.envelope.to.includes(recipient.studentEmail)) {
@@ -160,6 +167,10 @@ class EmailController {
             status: "Success",
             messageId: info.messageId,
           });
+
+          user.isReceivedMail = 1;
+
+          await user.save();
         } else {
           errorResults.push({
             recipientEmail: recipient.studentEmail,
@@ -168,6 +179,8 @@ class EmailController {
           });
         }
       } catch (error) {
+        logger.error(error);
+
         errorResults.push({
           recipient,
           status: "Failed",

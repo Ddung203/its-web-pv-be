@@ -12,6 +12,7 @@ interface IUser {
   isTested?: number;
   isInterviewed?: number;
   isPassed?: number;
+  isReceivedMail?: number;
 }
 
 interface IQuestion {
