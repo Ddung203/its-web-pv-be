@@ -9,4 +9,6 @@ const router = express.Router();
 // Email endpoint
 router.post("/feedback", validate(emailValidator.feedback), asyncHandle(EmailController.sendFeedback));
 
+router.post("/sendEmails", asyncHandle(EmailController.sendEmails));
+
 export { router as emailRouter };

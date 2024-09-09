@@ -27,7 +27,7 @@ playSchema.statics.List = async function ({ skip = 0, limit = 500, sort = { crea
   const data = await this.find(filter, { createdAt: 0, updatedAt: 0, password: 0 })
     .populate({
       path: "userID",
-      select: "studentCode studentName studentClass studentHometown isPassed",
+      select: "studentCode studentName studentClass studentHometown isPassed image",
     })
     .sort(sort)
     .skip(+skip)

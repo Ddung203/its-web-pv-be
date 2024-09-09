@@ -38,3 +38,7 @@ interface IPlay {
   comment: string;
   endTime: any;
 }
+
+interface IStat {
+  websiteViews: number;
+}
