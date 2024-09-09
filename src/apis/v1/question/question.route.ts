@@ -11,7 +11,7 @@ const router = express.Router();
 // Question endpoint
 router.get(
   "/list",
-  authentication(["admin"]),
+  authentication(["admin", "interviewer"]),
   cacheMiddleware("questions"),
   asyncHandle(QuestionController.listQuestions),
 );

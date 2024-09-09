@@ -12,7 +12,7 @@ router.get("/list", authentication(["admin"]), asyncHandle(PlayController.listPl
 
 router.get(
   "/leaderboard",
-  authentication(["admin"]),
+  authentication(["admin", "interviewer"]),
   cacheMiddleware("leaderboard"),
   asyncHandle(PlayController.leaderboard),
 );
