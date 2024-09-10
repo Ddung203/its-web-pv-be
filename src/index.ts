@@ -19,8 +19,6 @@ const onListening = async () => {
 
   client.on("connect", () => {
     console.log("\x1b[33m%s\x1b[0m", "Đã kết nối tới Redis");
-
-    logger.info("Redis Client Connected!");
   });
 
   client.on("error", (err) => {

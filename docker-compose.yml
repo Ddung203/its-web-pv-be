@@ -7,23 +7,9 @@ services:
     container_name: web-pv-api
     restart: unless-stopped
     env_file: .env
-    environment:
-      - NODE_ENV=$NODE_ENV
-      - PORT=$PORT
-      - API_VERSION=$API_VERSION
-      - MONGO_URI=$MONGO_URI
-      - JWT_SECRET=$JWT_SECRET
-      - API_KEY=$API_KEY
-      - ALLOWED_IP=$ALLOWED_IP
-      - RD_PASSWORD=$RD_PASSWORD
-      - RD_HOST=$RD_HOST
-      - RD_PORT=$RD_PORT
-      - EMAIL_AUTH_USER=$EMAIL_AUTH_USER
-      - EMAIL_AUTH_PASS=$EMAIL_AUTH_PASS
     ports:
       - "8181:8181"
     volumes:
-      - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     networks:
       - app-network

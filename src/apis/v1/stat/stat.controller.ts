@@ -3,6 +3,7 @@ import HttpStatusCode from "../../../enums/HttpStatusCode";
 import { BadRequestError } from "../../../responses/error";
 import Stat from "../../../models/Stat";
 import User from "../../../models/User";
+import Question from "../../../models/Question";
 
 class StatController {
   static async getList(req: Request, res: Response, next: NextFunction) {
@@ -127,6 +128,13 @@ class StatController {
       const countUserInterviewed = await User.countDocuments({ isInterviewed: 1 });
       const countUserPassed = await User.countDocuments({ isPassed: 1 });
 
+      const questions = await Question.find();
+      const users = await User.find().select("-createdAt -updatedAt -__v ");
+      const usersTested = await User.find({ isTested: 1 }).select("-createdAt -updatedAt -__v ");
+      const usersInterviewed = await User.find({ isInterviewed: 1 }).select("-createdAt -updatedAt -__v ");
+      const usersPassed = await User.find({ isPassed: 1 }).select("-createdAt -updatedAt -__v ");
+      const usersMailed = await User.find({ isReceivedMail: 1 }).select("-createdAt -updatedAt -__v ");
+
       return res.status(HttpStatusCode.OK).json({
         success: true,
         payload: {
@@ -135,6 +143,12 @@ class StatController {
           countUserTested: countUserTested || 0,
           countUserInterviewed: countUserInterviewed || 0,
           countUserPassed: countUserPassed || 0,
+          questions,
+          users,
+          usersTested,
+          usersInterviewed,
+          usersPassed,
+          usersMailed,
         },
         message: "Get web stat successfully!",
       });

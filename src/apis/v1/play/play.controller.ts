@@ -7,6 +7,7 @@ import RedisService from "../../../services/redis.service";
 import User from "../../../models/User";
 import { AuthenticatedRequest } from "../../../types/Request";
 import Question from "../../../models/Question";
+import logger from "../../../configs/logger";
 
 class PlayController {
   static listPlays = async (req: Request, res: Response, next: NextFunction) => {
@@ -23,6 +24,8 @@ class PlayController {
         message: "Get list of plays!",
       });
     } catch (error) {
+      logger.error(`PlayController - listPlays: ${error}`);
+
       next(error);
     }
   };
@@ -80,6 +83,8 @@ class PlayController {
         message: "Get leaderboard successfully!",
       });
     } catch (error) {
+      logger.error(`PlayController - leaderboard: ${error}`);
+
       next(error);
     }
   };
@@ -117,6 +122,8 @@ class PlayController {
         message: "Start play successfully!",
       });
     } catch (error) {
+      logger.error(`PlayController - startPlay: ${error}`);
+
       next(error);
     }
   };
@@ -158,6 +165,8 @@ class PlayController {
         message: "End play successfully!",
       });
     } catch (error) {
+      logger.error(`PlayController - endPlay: ${error}`);
+
       next(error);
     }
   };
@@ -189,6 +198,8 @@ class PlayController {
         message: "Interview completed successfully!",
       });
     } catch (error) {
+      logger.error(`PlayController - updateQuestion: ${error}`);
+
       next(error);
     }
   };

@@ -5,6 +5,7 @@ import { AuthenticatedRequest } from "../../../types/Request";
 import Question from "../../../models/Question";
 import RedisService from "../../../services/redis.service";
 import { BadRequestError } from "../../../responses/error";
+import logger from "../../../configs/logger";
 
 class QuestionController {
   static listQuestions = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -30,6 +31,7 @@ class QuestionController {
         message: "Get list of questions!",
       });
     } catch (error) {
+      logger.error(`QuestionController - listQuestions: ${error}`);
       next(error);
     }
   };
@@ -49,6 +51,8 @@ class QuestionController {
         message: "Question created successfully!",
       });
     } catch (error) {
+      logger.error(`QuestionController - createQuestion: ${error}`);
+
       next(error);
     }
   };
@@ -68,6 +72,8 @@ class QuestionController {
         message: "Questions created successfully!",
       });
     } catch (error) {
+      logger.error(`QuestionController - insertQuestions: ${error}`);
+
       next(error);
     }
   };
@@ -104,6 +110,8 @@ class QuestionController {
         message: "Question updated successfully!",
       });
     } catch (error) {
+      logger.error(`QuestionController - updateQuestion: ${error}`);
+
       next(error);
     }
   };
@@ -133,6 +141,8 @@ class QuestionController {
         message: "Question deteted successfully!",
       });
     } catch (error) {
+      logger.error(`QuestionController - deleteQuestion: ${error}`);
+
       next(error);
     }
   };

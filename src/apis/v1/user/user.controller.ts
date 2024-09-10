@@ -5,6 +5,7 @@ import { AuthenticatedRequest } from "../../../types/Request";
 import { BadRequestError } from "../../../responses/error";
 import { omitData } from "../../../utils/pick";
 import Play from "../../../models/Play";
+import logger from "../../../configs/logger";
 
 class UserController {
   static listUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,6 +22,7 @@ class UserController {
         message: "Get list of users!",
       });
     } catch (error) {
+      logger.error(`UserController - listUsers: ${error}`);
       next(error);
     }
   };
@@ -46,6 +48,8 @@ class UserController {
         message: "Received user information successfully!",
       });
     } catch (error) {
+      logger.error(`UserController - findResult: ${error}`);
+
       return next(error);
     }
   };
@@ -75,6 +79,8 @@ class UserController {
         message: "Received user and play information successfully!",
       });
     } catch (error) {
+      logger.error(`UserController - getUser: ${error}`);
+
       next(error);
     }
   };
@@ -101,6 +107,7 @@ class UserController {
         message: "User information updated successfully!",
       });
     } catch (error) {
+      logger.error(`UserController - updateUser: ${error}`);
       next(error);
     }
   };
@@ -118,6 +125,8 @@ class UserController {
         .status(HttpStatusCode.OK)
         .json({ success: true, payload: { deletedUser: user }, message: "User deleted!" });
     } catch (error) {
+      logger.error(`UserController - removeUser: ${error}`);
+
       next(error);
     }
   };

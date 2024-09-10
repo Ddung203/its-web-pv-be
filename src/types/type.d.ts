@@ -1,3 +1,18 @@
+interface IConfig {
+  ENVIRONMENT: Environment;
+  PORT: number | string;
+  API_VERSION: string;
+  MONGO_URI: string;
+  JWT_SECRET: string;
+  ALLOWED_IP: any;
+  API_KEY: string;
+  RD_PASSWORD: string;
+  RD_HOST: string;
+  RD_PORT: any;
+}
+
+type Environment = "development" | "production";
+
 interface IUser {
   studentCode: string;
   studentName: string;

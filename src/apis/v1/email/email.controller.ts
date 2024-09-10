@@ -26,7 +26,8 @@ class EmailController {
         message: "Send mail ok!",
       });
     } catch (error) {
-      // Log error
+      logger.error("Send Feedback Error", error);
+
       next(error);
     }
   };

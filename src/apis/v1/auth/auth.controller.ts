@@ -9,6 +9,7 @@ import User from "../../../models/User";
 import { AuthenticatedRequest } from "../../../types/Request";
 import jwtHandler from "../../../utils/jwtHandle";
 import generateNumber from "../../../utils/generateNumber";
+import logger from "../../../configs/logger";
 
 class AuthController {
   static loginHandle = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -39,6 +40,8 @@ class AuthController {
         message: "User logged in successfully!",
       });
     } catch (error) {
+      logger.error(`AuthController - loginHandle: ${error}`);
+
       next(error);
     }
   };
@@ -97,6 +100,8 @@ class AuthController {
         message: "User registered successfully!",
       });
     } catch (error) {
+      logger.error(`AuthController - signUpHandle: ${error}`);
+
       next(error);
     }
   };

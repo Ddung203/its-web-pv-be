@@ -7,9 +7,9 @@ import asyncHandle from "../../../utils/asyncHandle";
 const router = express.Router();
 
 // Stat endpoint
-router.get("/list", asyncHandle(statController.getList));
+router.get("/list", authentication(["admin"]), asyncHandle(statController.getList));
 router.get("/visit", asyncHandle(statController.visit));
 
-router.get("/info", asyncHandle(statController.getStat));
+router.get("/info", authentication(["admin"]), asyncHandle(statController.getStat));
 
 export { router as statRouter };
