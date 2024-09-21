@@ -1,7 +1,7 @@
 import { ALLOWED_IP } from "./config";
 
 const corsConfiguration = {
-  origin: ALLOWED_IP,
+  origin: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };

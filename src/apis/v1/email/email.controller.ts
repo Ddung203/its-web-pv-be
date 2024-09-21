@@ -51,6 +51,8 @@ class EmailController {
       const successResults = results.filter((result) => result.status === "Success");
       const errorResults = results.filter((result) => result.status === "Failed");
 
+      // EmailController.processEmail()
+
       return res.status(HttpStatusCode.OK).json({
         success: true,
         payload: { successResults, errorResults },
@@ -117,18 +119,18 @@ class EmailController {
               <div>
                 <img src="https://firebasestorage.googleapis.com/v0/b/upload-images-42481.appspot.com/o/logos%2Flogofull.png?alt=media&token=d57eeec4-75fe-497a-a43f-80822d43527e" height="40px" alt="IT Supporter Logo" />
                 <p>Xin chào <b>${recipient.studentName}</b>,</p>
-                <p>Chúng tôi rất vui khi nhận được đơn ứng tuyển của bạn. Sau khi xem xét kết quả bài test và buổi phỏng vấn, chúng tôi xin chúc mừng bạn đã trở thành Cộng tác viên mới của CLB Hỗ trợ kỹ thuật IT Supporter.</p>
+                <p>Chúng mình rất vui khi nhận được đơn ứng tuyển của bạn. Sau khi xem xét kết quả bài test và buổi phỏng vấn, chúng mình xin chúc mừng bạn đã trở thành Cộng tác viên mới của CLB Hỗ trợ kỹ thuật IT Supporter.</p>
                 <p><b>Vui lòng xác nhận các thông tin cá nhân dưới đây:</b></p>
                 <ul>
                   <li><b>Mã sinh viên:</b> ${recipient.studentCode}</li>
                   <li><b>Lớp:</b> ${recipient.studentClass}</li>
                   <li><b>Điện thoại:</b> ${recipient.studentPhone}</li>
                   <li><b>Quê quán:</b> ${recipient.studentHometown}</li>
-                  <li><b>Tham gia nhóm Zalo Gen11:</b> <a href="https://zalo.me/g/qkhavc283" target="_blank">Tại đây</a></li>
+                  <li><b>Tham gia nhóm Zalo Gen11:</b> <a href="https://zalo.me/g/tywmxz174" target="_blank">Tại đây</a></li>
                   <li><b>Thời gian họp:</b> 17:30, thứ Năm, 05/10/2024</li>
                   <li><b>Địa điểm:</b> Canteen C123, Cơ sở 3, Trường Đại học Công nghiệp Hà Nội</li>
                 </ul>
-                <p>Nếu có bất kỳ thông tin nào chưa chính xác, hãy liên hệ với chúng tôi qua <a href="https://www.facebook.com/itsupporter.haui" target="_blank">Facebook</a>.</p>
+                <p>Nếu có bất kỳ thông tin nào chưa chính xác, hãy liên hệ với chúng mình qua <a href="https://www.facebook.com/itsupporter.haui" target="_blank">Facebook</a>.</p>
                 <h3 style="color: #ff9800; text-align: center;">Hẹn gặp lại bạn tại buổi họp!</h3>
               </div>
               <div class="footer">
